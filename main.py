@@ -33,23 +33,60 @@ os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
 
 # Dictionnaire des voix#############
 VOICES = {
-    "cmn-CN": {
+    "cmn-CN": { # Chinois Mandarin (Chine)
         "female": "cmn-TW-Standard-A",
         "male": "cmn-CN-Wavenet-B"
     },
-    "en-GB": {
+    "en-GB": { #Anglais (Royaume-Uni)
         "female": "en-GB-Chirp3-HD-Leda",
         "male": "en-GB-Chirp3-HD-Alnilam"
     },
-    "fr-FR": {
+    "fr-FR": { # Français
         "female": "fr-FR-Chirp-HD-O",
         "male": "fr-FR-Chirp3-HD-Algenib"
     },
-    "es-ES": {
+    "es-ES": { # Espagnol
         "female": "es-ES-Chirp-HD-F",
         "male": "es-ES-Chirp-HD-D"
+    },
+    "de-DE": {  # Allemand
+        "female": "de-DE-Chirp3-HD-Aoede",
+        "male": "de-DE-Chirp3-HD-Charon"
+    },
+    "it-IT": {  # Italien
+        "female": "it-IT-Chirp3-HD-Aoede",
+        "male": "it-IT-Chirp3-HD-Charon"
+    },
+    "pt-BR": {  # Portugais (Brésil)
+        "female": "pt-BR-Chirp3-HD-Aoede",
+        "male": "pt-BR-Chirp3-HD-Charon"
+    },
+    "ru-RU": {  # Russe
+        "female": "ru-RU-Chirp3-HD-Aoede",
+        "male": "ru-RU-Chirp3-HD-Charon"
+    },
+    "ja-JP": {  # Japonais
+        "female": "ja-JP-Chirp3-HD-Autonoe",
+        "male": "ja-JP-Chirp3-HD-Charon"
+    },
+    "ko-KR": {  # Coréen
+        "female": "ko-KR-Chirp3-HD-Aoede",
+        "male": "ko-KR-Chirp3-HD-Charon"
+    },
+    "hi-IN": {  # Hindi
+        "female": "hi-IN-Chirp3-HD-Aoede",
+        "male": "hi-IN-Chirp3-HD-Charon"
+    },
+    "ar-XA": {  # Arabe
+        "female": "ar-XA-Chirp3-HD-Achernar",
+        "male": "ar-XA-Chirp3-HD-Alnilam"
+    },
+    "nl-NL": {  # Néerlandais
+        "female": "nl-NL-Chirp3-HD-Aoede",
+        "male": "nl-NL-Chirp3-HD-Charon"
     }
 }
+
 
 
 #Google Text to Speech API setup
@@ -199,7 +236,7 @@ def generate_audio_for_entry(
 ######################################## ============================ ################################################################
 
 engine = create_engine("sqlite:///./vocab.db")
-rows = []
+
 
 @app.route("/",methods=["GET", "POST"])
 def home():
@@ -218,9 +255,12 @@ def home():
     conn.commit()
 
    #inizialization of settings
+    rows = []
     pause_duration = float(request.form.get("pause_duration", 2.0))
     gender_voice = request.form.get("gender_voice", "female")
     num_loops = int(request.form.get("num_loops", 1))
+    language1 = request.form.get("language1", "en-GB")
+    language2 = request.form.get("language2", "en-GB")
 
     #insert data into database
     if request.method == "POST":
@@ -284,7 +324,7 @@ def home():
         #          upadate status          #
         ####################################
 
-        update = request.form.get("update")
+        update = request.form.get("update_settings")
         if update:
             status_list = []
             for i in range(1, len(rows)+1):
@@ -337,8 +377,8 @@ def home():
             # Configuration utilisateur
             # ============================
             USER_CONFIG = {
-                "target_lang": "cmn-CN",
-                "translation_lang": "en-GB",
+                "target_lang": language1,
+                "translation_lang": language2,
                 "target_gender": gender_voice,
                 "translation_gender": gender_voice,
                 "delay_seconds": pause_duration
@@ -355,7 +395,8 @@ def home():
             final_audio_all = AudioSegment.empty()
             for _ in range(num_loops): #nb de repetitions de chaque sequence
                 #Génération audios complets pour chaque entrée => à adapter pour la BDD
-                bip = Sine(1000).to_audio_segment(duration=300)
+                final_audio_all = AudioSegment.empty()
+                bip = Sine(500).to_audio_segment(duration=300)
 
                 for i, (index, row) in enumerate(df.iterrows()):
                     word = row["word"]
@@ -401,7 +442,7 @@ def home():
     
 
 
-    return render_template('index.html', rows=rows, pause_duration=pause_duration, gender_voice=gender_voice, num_loops=num_loops)
+    return render_template('index.html', rows=rows, pause_duration=pause_duration, gender_voice=gender_voice, num_loops=num_loops, language1=language1, language2=language2)
 
 
 
