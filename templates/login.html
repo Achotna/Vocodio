@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+<meta charset="UTF-8">
+<title>Connexion</title>
+
+
+</head>
+
+<body>
+
+<h1>Connexion</h1>
+
+<form method="POST">
+{{ form.hidden_tag() }}
+
+<div>
+<label>Nom d'utilisateur</label>
+<input type="text" name="username" required>
+</div>
+
+<div>
+<label>Mot de passe</label>
+<input type="password" name="password" required>
+</div>
+
+<button type="submit">Connexion</button>
+
+
+</form>
+
+{% if message_login %}
+<p>{{ message_login }}</p>
+{% endif %}
+
+<p>
+Pas de compte ?
+<a href="{{ url_for('register') }}">S'inscrire</a>
+</p>
+
+</body>
+</html>

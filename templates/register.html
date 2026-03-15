@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+<meta charset="UTF-8">
+<title>S'inscrire</title>
+
+
+</head>
+
+<body>
+
+<h1>S'inscrire</h1>
+
+<form method="POST">
+{{ form.hidden_tag() }}
+
+<div>
+<label>Nom d'utilisateur</label>
+<input type="text" name="username" required>
+</div>
+
+<div>
+<label>Mot de passe</label>
+<input type="password" name="password" required>
+</div>
+
+<button type="submit">S'inscrire</button>
+
+</form>
+
+<p>
+Déjà un compte ?
+<a href="{{ url_for('login') }}">Connexion</a>
+</p>
+
+</body>
+</html>

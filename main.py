@@ -9,6 +9,12 @@ from google.cloud import texttospeech
 from pydub import AudioSegment
 from pydub.generators import Sine
 
+from flask_bcrypt import Bcrypt
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from flask_sqlalchemy import SQLAlchemy
+from flask_wtf import FlaskForm
+from wtforms import StringField, PasswordField, SubmitField
+from wtforms.validators import InputRequired, Length, ValidationError
 
 
 # ============================#
@@ -16,6 +22,13 @@ from pydub.generators import Sine
 # ============================#
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = "antooghghdf"
+bcrypt = Bcrypt(app)
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = "login"
+
 app.config.update(
     UPLOAD_FOLDER="uploads/",
     #only excel files DROPZONE_ALLOWED_FILE_TYPE="xls,xlsx", 
@@ -23,6 +36,47 @@ app.config.update(
 )
 dropzone = Dropzone(app)
 os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
+
+
+
+
+class RegisterForm(FlaskForm):
+    username = StringField(validators=[InputRequired(), Length(min=4, max=20)])
+    password = PasswordField(validators=[InputRequired(), Length(min=4, max=20)])
+    submit = SubmitField("Register")
+
+    def validate_username(self, username):
+        conn = sqlite3.connect("users.db")
+        cursor = conn.cursor()
+        cursor.execute("SELECT id FROM users WHERE username=?", (username.data,))
+        existing = cursor.fetchone()
+        conn.close()
+        if existing:
+            raise ValidationError("Username already exists")
+
+class LoginForm(FlaskForm):
+    username = StringField(validators=[InputRequired(), Length(min=4, max=20)])
+    password = PasswordField(validators=[InputRequired(), Length(min=4, max=20)])
+    submit = SubmitField("Login")
+
+
+class User(UserMixin):
+    def __init__(self, id, username, password):
+        self.id = id
+        self.username = username
+        self.password = password
+
+@login_manager.user_loader
+def load_user(user_id):
+    conn = sqlite3.connect("users.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT id, username, password FROM users WHERE id=?", (user_id,))
+    row = cursor.fetchone()
+    conn.close()
+    if row:
+        return User(*row)
+    return None
+
 
 
 
@@ -235,24 +289,126 @@ def generate_audio_for_entry(
 ########################################             ANTO             ################################################################
 ######################################## ============================ ################################################################
 
+@app.route("/register", methods=['GET','POST'])
+def register():
+    form = RegisterForm()
+    if form.validate_on_submit():
+        print("FORM VALID")   # test
+        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        conn = sqlite3.connect("users.db")
+        cursor = conn.cursor()
+        try:
+            cursor.execute(
+                "INSERT INTO users (username, password) VALUES (?, ?)",
+                (form.username.data, hashed_password)
+            )
+        except sqlite3.IntegrityError:
+            return "Username already exists"
+        conn.commit()
+        conn.close()
+        return redirect(url_for('login'))
+
+    return render_template('register.html', form=form)
+
+
+
+@app.route("/login", methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    message_login = None
+    if form.validate_on_submit():
+        conn = sqlite3.connect("users.db")
+        cursor = conn.cursor()
+        cursor.execute("SELECT id, username, password FROM users WHERE username=?", (form.username.data,))
+        row = cursor.fetchone()
+        conn.close()
+        if row:
+            user = User(*row)
+            if bcrypt.check_password_hash(user.password, form.password.data):
+                login_user(user)
+                return redirect(url_for('index'))
+            else:
+                message_login = "Password is incorrect"
+        else:
+            message_login = "User not found"
+    return render_template('login.html', form=form, message_login=message_login)
+
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('login')) 
+
+
+
+
 engine = create_engine("sqlite:///./vocab.db")
+engine = create_engine("sqlite:///./users.db")
+engine = create_engine("sqlite:///./audios.db")
 
-
-@app.route("/",methods=["GET", "POST"])
-def home():
-
-    #initialize database
+def initialize_databases():
+    #initialize database vocab
     conn = sqlite3.connect("vocab.db")
     cursor = conn.cursor()
     cursor.execute("""
             CREATE TABLE IF NOT EXISTS vocab (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL,
                 lang1 TEXT NOT NULL,
                 lang2 TEXT NOT NULL,
-                status INTEGER
+                status INTEGER,
+                FOREIGN KEY (user_id) REFERENCES users(id)
             )
             """)
     conn.commit()
+    print("Vocab database initialized")
+
+    #initialise db users
+    conn = sqlite3.connect("users.db")
+    cursor = conn.cursor()
+    cursor.execute("""
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                username TEXT NOT NULL,
+                password TEXT NOT NULL
+            )
+            """)
+    conn.commit()
+    print("Users database initialized")
+
+
+    #initialise db audios
+    conn = sqlite3.connect("audios.db")
+    cursor = conn.cursor()
+    cursor.execute("""
+            CREATE TABLE IF NOT EXISTS audios (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL,
+                filename TEXT NOT NULL,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY(user_id) REFERENCES users(id)
+            )
+            """)
+    conn.commit()
+    print("Audios database initialized")
+
+
+
+
+
+@app.route("/")
+def home():
+    return render_template('home.html')
+
+
+
+
+@app.route("/home",methods=["GET", "POST"])
+@login_required
+def index():
+
+    print(f"Current user: {current_user.username}")
 
    #inizialization of settings
     rows = []
@@ -299,6 +455,8 @@ def home():
             new_data_to_insert.to_sql("vocab", con=engine, if_exists="append", index=False)
 
         #resultat verif#####################################################################
+        conn = sqlite3.connect("vocab.db")
+        cursor = conn.cursor()
         cursor.execute("SELECT * FROM vocab")
         rows = cursor.fetchall()
         for row in rows:
@@ -316,6 +474,10 @@ def home():
         if clear:
             cursor.execute("DELETE FROM vocab")
             cursor.execute("DELETE FROM sqlite_sequence WHERE name='vocab'")
+            cursor.execute("DELETE FROM users")
+            cursor.execute("DELETE FROM sqlite_sequence WHERE name='users'")
+            cursor.execute("DELETE FROM audios")
+            cursor.execute("DELETE FROM sqlite_sequence WHERE name='audios'")
             print('database cleared')
             conn.commit()
 
@@ -449,6 +611,7 @@ def home():
 
 
 if __name__ == "__main__":
+    initialize_databases()
     app.run(debug=True)
 
 
