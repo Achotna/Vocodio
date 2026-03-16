@@ -343,12 +343,13 @@ def logout():
 
 
 
-engine = create_engine("sqlite:///./vocab.db")
-engine = create_engine("sqlite:///./users.db")
-engine = create_engine("sqlite:///./audios.db")
+#engine = create_engine("sqlite:///./vocab.db")
+#engine = create_engine("sqlite:///./users.db")
+#engine = create_engine("sqlite:///./audios.db")
 
 def initialize_databases():
     #initialize database vocab
+    engine = create_engine("sqlite:///./vocab.db")
     conn = sqlite3.connect("vocab.db")
     cursor = conn.cursor()
     cursor.execute("""
@@ -365,6 +366,7 @@ def initialize_databases():
     print("Vocab database initialized")
 
     #initialise db users
+    engine = create_engine("sqlite:///./users.db")
     conn = sqlite3.connect("users.db")
     cursor = conn.cursor()
     cursor.execute("""
@@ -379,6 +381,7 @@ def initialize_databases():
 
 
     #initialise db audios
+    engine = create_engine("sqlite:///./audios.db")
     conn = sqlite3.connect("audios.db")
     cursor = conn.cursor()
     cursor.execute("""
@@ -407,8 +410,9 @@ def home():
 @app.route("/home",methods=["GET", "POST"])
 @login_required
 def index():
-
     print(f"Current user: {current_user.username}")
+
+    engine = create_engine("sqlite:///./vocab.db")
 
    #inizialization of settings
     rows = []
@@ -427,6 +431,7 @@ def index():
         ####################################
 
         f = request.files.get("file")
+        print("File received:", f)
         if f:
             file_name=f"{app.config['UPLOAD_FOLDER']}/{f.filename}"
             f.save(file_name)
@@ -437,7 +442,9 @@ def index():
             print(data.head())
 
             #initialize database
+            data["user_id"] = current_user.id
             data.to_sql('vocab', con=engine, if_exists='append', index=False)
+            print("Data from excel file inserted into database")
 
         #add new word
         word = request.form.get("word")
@@ -446,10 +453,10 @@ def index():
             print("New word", word)
             print("New translation", translation)  
             #new entry
-            new = {"lang1": word, "lang2": translation, "status": 1}
+            new = {"user_id": current_user.id, "lang1": word, "lang2": translation, "status": 1}
             new_data = pd.DataFrame([new])
             #check for duplicates
-            existing_data = pd.read_sql("SELECT * FROM vocab", engine)
+            existing_data = pd.read_sql(f"SELECT * FROM vocab WHERE user_id = {current_user.id}", engine)
             new_data_to_insert = new_data[~new_data['lang1'].isin(existing_data['lang1'])]
             #insert 
             new_data_to_insert.to_sql("vocab", con=engine, if_exists="append", index=False)
@@ -457,7 +464,7 @@ def index():
         #resultat verif#####################################################################
         conn = sqlite3.connect("vocab.db")
         cursor = conn.cursor()
-        cursor.execute("SELECT * FROM vocab")
+        cursor.execute("SELECT * FROM vocab WHERE user_id = ?", (current_user.id,))
         rows = cursor.fetchall()
         for row in rows:
             print(row)
@@ -472,15 +479,31 @@ def index():
 
         clear= request.form.get("clear")
         if clear:
-            cursor.execute("DELETE FROM vocab")
-            cursor.execute("DELETE FROM sqlite_sequence WHERE name='vocab'")
-            cursor.execute("DELETE FROM users")
-            cursor.execute("DELETE FROM sqlite_sequence WHERE name='users'")
-            cursor.execute("DELETE FROM audios")
-            cursor.execute("DELETE FROM sqlite_sequence WHERE name='audios'")
-            print('database cleared')
-            conn.commit()
+            # vocab
+            conn_vocab = sqlite3.connect("vocab.db")
+            cursor_vocab = conn_vocab.cursor()
+            cursor_vocab.execute("DELETE FROM vocab")
+            cursor_vocab.execute("DELETE FROM sqlite_sequence WHERE name='vocab'")
+            conn_vocab.commit()
+            conn_vocab.close()
 
+            # users
+            conn_users = sqlite3.connect("users.db")
+            cursor_users = conn_users.cursor()
+            cursor_users.execute("DELETE FROM users")
+            cursor_users.execute("DELETE FROM sqlite_sequence WHERE name='users'")
+            conn_users.commit()
+            conn_users.close()
+
+            # audios
+            conn_audios = sqlite3.connect("audios.db")
+            cursor_audios = conn_audios.cursor()
+            cursor_audios.execute("DELETE FROM audios")
+            cursor_audios.execute("DELETE FROM sqlite_sequence WHERE name='audios'")
+            conn_audios.commit()
+            conn_audios.close()
+
+            print("Databases cleared")
 
         ####################################
         #          upadate status          #
@@ -551,7 +574,7 @@ def index():
             # ============================
 
             #Récupération des données depuis la BDD
-            df = pd.read_sql("SELECT lang1 AS word, lang2 AS translation FROM vocab WHERE status=1", engine)
+            df = pd.read_sql(f"SELECT lang1 AS word, lang2 AS translation FROM vocab WHERE status=1 AND user_id = {current_user.id}", engine)
 
 
             final_audio_all = AudioSegment.empty()
@@ -597,8 +620,11 @@ def index():
             print('Audio generation completed. File saved as final_output.mp3')
                                     
         #Display database content
-        cursor.execute("SELECT * FROM vocab")
+        cursor.execute("SELECT id, lang1, lang2, status FROM vocab WHERE user_id = ?", (current_user.id,))
+        
         rows = cursor.fetchall()
+        
+        print(rows)
         conn.close()
 
     
@@ -613,6 +639,7 @@ def index():
 if __name__ == "__main__":
     initialize_databases()
     app.run(debug=True)
+    
 
 
 #$env:FLASK_APP = "main.py"

@@ -35,7 +35,7 @@
 
  <div class="max-w-xl mx-auto p-6 bg-gray-100 bg-clip-padding backdrop-filter backdrop-blur-md bg-opacity-10 border border-gray-100 rounded-md shadow-lg mb-8 mt-8">
   <h1 class="text-3xl text-center text-gray-800 mb-4">Upload your excel file</h1>
-  <form action="/" class="dropzone" id="my-dropzone" method="POST" enctype="multipart/form-data">
+  <form action="/home" class="dropzone" id="my-dropzone" method="POST" enctype="multipart/form-data">
    {{ dropzone.create(action="/") }}
    {{ dropzone.load_js() }}
    {{ dropzone.config() }}
@@ -174,9 +174,7 @@
 </div>
 
 <div>
-    <a href="{{ url_for('register') }}">S'inscrire</a>
-    <br>
-    <a href="{{ url_for('login') }}">Connexion</a>
+    <a href="{{ url_for('logout') }}">Se déconnecter</a>
 </div>
 
 
