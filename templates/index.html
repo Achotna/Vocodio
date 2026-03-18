@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,76 +11,100 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-
-  <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
 
   {{ dropzone.load_css() }}
-  {{ dropzone.style('border: 2px dashed #0087F7; min-height: 200px;') }}
+  {{ dropzone.style('border: 2px dashed #a78bfa; min-height: 150px; border-radius:8px;') }}
 </head>
 
+<html>
 
-
-<body class="min-h-screen pt-20">
+<body class="min-h-screen flex flex-col bg-gradient-to-br from-blue-100 to-purple-100 to-pink-100 font-[Noto_Sans]">
 
  <header class="fixed top-0 left-0 w-full bg-white bg-opacity-70 backdrop-filter backdrop-blur-md shadow-md z-10">
   <div class="container mx-auto flex items-center justify-between py-4 px-6">
    <a href="/" class="text-xl font-bold text-gray-800">Language App</a>
    <nav>
-    <ul class="flex space-x-6">
-     <li><a href="home.html" class="text-gray-600 hover:text-gray-800">Home</a></li>
-     <li><a href="/about" class="text-gray-600 hover:text-gray-800">About</a></li>
-     <li><a href="/contact" class="text-gray-600 hover:text-gray-800">Contact</a></li>
-    </ul>
+        <ul class="flex space-x-6">
+            <li><a href="home.html" class="text-gray-600 hover:text-gray-800">Accueil</a></li>
+            <li><a href="{{ url_for('logout') }}">Se déconnecter</a></li>
+            <li><a href="/about" class="text-gray-600 hover:text-gray-800">A propos</a></li>
+            <li><a href="/contact" class="text-gray-600 hover:text-gray-800">Contact</a></li>
+        </ul>
    </nav>
   </div>
   </header>
 
- <div class="max-w-xl mx-auto p-6 bg-gray-100 bg-clip-padding backdrop-filter backdrop-blur-md bg-opacity-10 border border-gray-100 rounded-md shadow-lg mb-8 mt-8">
-  <h1 class="text-3xl text-center text-gray-800 mb-4">Upload your excel file</h1>
-  <form action="/home" class="dropzone" id="my-dropzone" method="POST" enctype="multipart/form-data">
-   {{ dropzone.create(action="/") }}
-   {{ dropzone.load_js() }}
-   {{ dropzone.config() }}
-  </form>
- </div>
+  <main class="flex-grow pt-28 pb-16 px-6">
 
+    <div class="max-w-5xl mx-auto mb-8">
+        <h1 class="text-3xl font-bold text-gray-800 mb-5 leading-tight">
+        Ready to learn,
+        <span class="text-purple-500">{{username}}?</span>
+        </h1>
+    </div>
 
+    <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
 
+        <div class="bg-white bg-opacity-70 backdrop-filter backdrop-blur-md border border-gray-200 rounded-lg shadow-lg p-6">
+            <h2 class="text-xl font-bold text-center text-gray-800 mb-7">Upload your excel file</h2>
+            <p class="text-sm text-gray-400 mb-3"> Glissez-déposez votre ficher Excel ci-dessous :</p>
+        
+        <form action="/home" class="dropzone" id="my-dropzone" method="POST" enctype="multipart/form-data">
+            {{ dropzone.create(action="/") }}
+            {{ dropzone.load_js() }}
+            {{ dropzone.config() }}
+        </form>
+    </div>
 
-
-
-
-
-
-<div class="max-w-xl mx-auto p-6 bg-gray-100 bg-clip-padding backdrop-filter backdrop-blur-md bg-opacity-10 border border-gray-100 rounded-md shadow-lg mb-8 mt-8">
-    <h1 class="text-3xl text-center text-gray-800 mb-4">Settings</h1>
+    <div class="bg-white bg-opacity-70 backdrop-filter backdrop-blur-md border border-gray-200 rounded-lg shadow-lg p-6">
+        <h2 class="text-xl font-bold text-center text-gray-800 mb-7">Ajouter un mot</h2>
+        <p class="text-sm text-gray-400 mb-3">Remplissez manuellement les cases ci-dessous pour ajouter un mot dans votre liste de vocabulaire:</p>
 
     <form method="POST">
-        <div>
-            <label class="block text-sm font-medium mt-4">Language</label>
-            <select name="language1" class="border rounded px-3 py-2 w-full">
-                <option value="de-DE" {% if language1 == "de-DE" %}selected{% endif %}>Allemand</option>
-                <option value="en-GB" {% if language1 == "en-GB" %}selected{% endif %}>Anglais</option>
-                <option value="ar-XA" {% if language1 == "ar-XA" %}selected{% endif %}>Arabe</option>
-                <option value="cmn-CN" {% if language1 == "cmn-CN" %}selected{% endif %}>Chinois</option>
-                <option value="ko-KR" {% if language1 == "ko-KR" %}selected{% endif %}>Coréen</option>
-                <option value="es-ES" {% if language1 == "es-ES" %}selected{% endif %}>Espagnol</option>
-                <option value="fr-FR" {% if language1 == "fr-FR" %}selected{% endif %}>Français</option>
-                <option value="hi-IN" {% if language1 == "hi-IN" %}selected{% endif %}>Hindi</option>
-                <option value="it-IT" {% if language1 == "it-IT" %}selected{% endif %}>Italien</option>
-                <option value="ja-JP" {% if language1 == "ja-JP" %}selected{% endif %}>Japonais</option>
-                <option value="nl-NL" {% if language1 == "nl-NL" %}selected{% endif %}>Néerlandais</option>
-                <option value="pt-BR" {% if language1 == "pt-BR" %}selected{% endif %}>Portugais</option>
-                <option value="ru-RU" {% if language1 == "ru-RU" %}selected{% endif %}>Russe</option>
-            </select>
+        <div class="mb-3">
+            <label class="block text-sm font-medium mt-2">Mot</label>
+            <input type="text" name="word" class="border rounded px-3 py-2 w-full" placeholder="Ex.apple">
+        </div>
 
-            <br>
+        <div class="mb-4">
+            <label for="translation" class="block text-sm font-medium mt-2">Traduction</label>
+            <input type="text" name="translation" class="border rounded px-3 py-2 w-full" placeholder="Ex.pomme">
+        </div>
 
-            <label class="block text-sm font-medium mt-4">Language</label>
+        <button type="submit" name="add_word" value="true"
+                class="w-full bg-purple-400 text-white py-2 rounded-lg hover:bg-purple-500 font-medium text-sm">Ajouter
+        </button>
+    </form>
+    </div>
+
+    <div class="bg-white bg-opacity-70 backdrop-filter backdrop-blur-md border border-gray-200 rounded-lg shadow-lg p-6">
+        <h2 class="text-xl font-bold text-center text-gray-800 mb-4">Paramètres</h2>
+
+        <form method="POST">
+
+            <div class="mb-3">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Langue</label>
+                <select name="language1" class="border rounded px-3 py-2 w-full">
+                    <option value="de-DE" {% if language1 == "de-DE" %}selected{% endif %}>Allemand</option>
+                    <option value="en-GB" {% if language1 == "en-GB" %}selected{% endif %}>Anglais</option>
+                    <option value="ar-XA" {% if language1 == "ar-XA" %}selected{% endif %}>Arabe</option>
+                    <option value="cmn-CN" {% if language1 == "cmn-CN" %}selected{% endif %}>Chinois</option>
+                    <option value="ko-KR" {% if language1 == "ko-KR" %}selected{% endif %}>Coréen</option>
+                    <option value="es-ES" {% if language1 == "es-ES" %}selected{% endif %}>Espagnol</option>
+                    <option value="fr-FR" {% if language1 == "fr-FR" %}selected{% endif %}>Français</option>
+                    <option value="hi-IN" {% if language1 == "hi-IN" %}selected{% endif %}>Hindi</option>
+                    <option value="it-IT" {% if language1 == "it-IT" %}selected{% endif %}>Italien</option>
+                    <option value="ja-JP" {% if language1 == "ja-JP" %}selected{% endif %}>Japonais</option>
+                    <option value="nl-NL" {% if language1 == "nl-NL" %}selected{% endif %}>Néerlandais</option>
+                    <option value="pt-BR" {% if language1 == "pt-BR" %}selected{% endif %}>Portugais</option>
+                    <option value="ru-RU" {% if language1 == "ru-RU" %}selected{% endif %}>Russe</option>
+                </select>
+            </div>
+
+        <div class="mb-3">
+
+            <label class="block text-sm font-medium text-gray-700 mb-2">Language</label>
             <select name="language2" class="border rounded px-3 py-2 w-full">
                 <option value="de-DE" {% if language2 == "de-DE" %}selected{% endif %}>Allemand</option>
                 <option value="en-GB" {% if language2 == "en-GB" %}selected{% endif %}>Anglais</option>
@@ -98,106 +122,97 @@
             </select>
         </div>
 
-        <br>
+        <div class="mb-3">
 
-        <label class="block text-sm font-medium mt-2">Pause Duration (s)</label>
-        <input type="number"
+            <label class="block text-sm font-medium text-gray-700 mb-2">Pause duration(s)</label>
+            <input type="number"
                name="pause_duration"
-               class="border rounded px-3 py-2 w-full"
+               class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus-ring-2 focus-ring-pruple-400 transition"
                value="{{ pause_duration }}"
                min="0.5"
                step="0.5">
 
-        <label class="block text-sm font-medium mt-4">Voice Gender</label>
-        <select name="gender_voice" class="border rounded px-3 py-2 w-full">
+        </div>
+
+        <div class="mb-3"> 
+
+        <label class="block text-sm font-medium text-gray-700 mb-2">Voice gender</label>
+        <select name="gender_voice" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus-ring-2 focus-ring-pruple-400 transition">
             <option value="female" {% if gender_voice == "female" %}selected{% endif %}>Female</option>
             <option value="male" {% if gender_voice == "male" %}selected{% endif %}>Male</option>
         </select>
 
-        <label class="block text-sm font-medium mt-4">Number of loops</label>
+        </div>
+
+        <div class="mb-5">
+
+        <label class="block text-sm font-medium text-gray-700 mb-2">Number of loops</label>
         <input type="number"
                name="num_loops"
-               class="border rounded px-3 py-2 w-full"
+               class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus-ring-2 focus-ring-pruple-400 transition"
                value="{{ num_loops }}"
                min="1"
                max="20"
                step="1">
 
-        <br>
+        </div>
 
-        <h1>Your list</h1>
-        <div class="max-h-64 overflow-y-auto">
-            <ul class="space-y-2">
-                {% if rows %}
-                    {% for row in rows %}
-                        <input type="hidden" name="word_id_{{ loop.index }}" value="{{ row[0] }}">
-                        <li class="flex items-center gap-3">
-                            <input type="checkbox" name="check_{{ loop.index }}" {% if row[3] == 1 %}checked{% endif %}>
-                            <span class="text-sm">{{ row[1] }} > {{ row[2] }}</span>
-                        </li>
-                    {% endfor %}
-                {% else %}
-                    <p>Vous n'avez aucun mot</p>
-                {% endif %}
-            </ul>
-            <br>
+        <button type="submit" name="update_settings" value="true"
+                class="w-full bg-purple-400 text-white py-2 rounded-lg hover:bg-purple-500 font-medium text-sm mb-3">Update
+        </button>
+
+        <form method="POST" class="mt-2">
+        <button type="submit" name="clear" value="true"
+                class="w-full bg-rose-400 text-white py-2 rounded-lg hover:bg-rose-500 font-medium text-sm mb-3">
+            Clear database
+        </button>
+        </form>
+
+    </div>
+
+
+        <div class="bg-white bg-opacity-70 backdrop-filter backdrop-blur-md border border-gray-200 rounded-lg shadow-lg p-6">
+            <h2 class="text-xl font-bold text-center text-gray-800 mb-7">Votre liste de mots</h2>
+            <div class="flex-grow max-h-64 overflow-y-auto mb-4 bg-gray-50">
+                <ul class="space-y-2">
+                    {% if rows %}
+                        {% for row in rows %}
+                            <input type="hidden" name="word_id_{{ loop.index }}" value="{{ row[0] }}">
+                            <li class="flex items-center gap-3">
+                                <input type="checkbox" name="check_{{ loop.index }}" {% if row[3] == 1 %}checked{% endif %}>
+                                <span class="text-sm">{{ row[1] }} > {{ row[2] }}</span>
+                            </li>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-gray-400 text-sm text-center py-4">Vous n'avez aucun mot pour l'instant</p>
+                    {% endif %}
+                </ul>
+            </div>
 
             <button type="submit"
                     name="update_settings"
                     value="true"
-                    class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-                Update Settings
+                    class="w-full bg-purple-400 text-white px-4 py-2 rounded-lg hover:bg-purple-500 transition font-medium text-sm mb-2">
+                Update settings
             </button>
 
             <button type="submit"
                     name="audio_generate"
                     value="true"
-                    class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 ml-2">
-                Generate Audio for Words
+                    class="w-full bg-green-400 text-white px-4 py-2 rounded-lg hover:bg-green-500 transition font-medium text-sm mb-2">
+                Generate audio for words
             </button>
+    </div>
+
+</div>
+
+</main>
+
+    <footer class="bg-white bg-opacity-70 backdrop-filter backdrop-blur-md shadow-inner">
+        <div class="max-w-5xl mx-auto px-6 py-6 flex flex-col md:flex-row items-center justify-between text-gray-600 text-center"> &copy; 2025 Language App. All rights reserved.
         </div>
-    </form>
-</div>
+    </footer>
 
-<div class="max-w-xl mx-auto text-gray-800 p-6 bg-gray-100 bg-clip-padding backdrop-filter backdrop-blur-md bg-opacity-10 border border-gray-100 rounded-md shadow-lg mb-8 mt-8">
-    <form method="POST">
-        <label class="block text-sm font-medium mt-2">Word</label>
-        <input type="text" name="word" class="border rounded px-3 py-2 w-full" placeholder="Enter a word">
-
-        <label for="translation" class="block text-sm font-medium mt-2">Translation</label>
-        <input type="text" name="translation" class="border rounded px-3 py-2 w-full" placeholder="Enter a translation">
-
-        <button type="submit" name="add_word" value="true"
-                class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 mt-2">Send</button>
-    </form>
-
-    <form method="POST" class="mt-2">
-        <button type="submit" name="clear" value="true"
-                class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-            Clear database
-        </button>
-    </form>
-</div>
-
-<div>
-    <a href="{{ url_for('logout') }}">Se déconnecter</a>
-</div>
-
-
-
-
-
-
-
-
-
-
-<div>
- <footer class="mt-20 mb-0 bg-white bg-opacity-70 backdrop-filter backdrop-blur-md shadow-inner pb-0">
-  <div class="max-w-5xl mx-auto px-6 py-6 flex flex-col md:flex-row items center justify-between text-gray-600 text-center">
-   &copy; 2025 Language App. All rights reserved.
-  </div>
- </footer>
 
 
 </body>
