@@ -170,41 +170,59 @@
 
     </div>
 
-
-        <div class="bg-white bg-opacity-70 backdrop-filter backdrop-blur-md border border-gray-200 rounded-lg shadow-lg p-6">
-            <h2 class="text-xl font-bold text-center text-gray-800 mb-7">Votre liste de mots</h2>
+        <form method="POST">
+           <h2 class="text-xl font-bold text-center text-gray-800 mb-7">Votre liste de mots</h2>
             <div class="flex-grow max-h-64 overflow-y-auto mb-4 bg-gray-50">
                 <ul class="space-y-2">
-                    {% if rows %}
-                        {% for row in rows %}
-                            <input type="hidden" name="word_id_{{ loop.index }}" value="{{ row[0] }}">
-                            <li class="flex items-center gap-3">
-                                <input type="checkbox" name="check_{{ loop.index }}" {% if row[3] == 1 %}checked{% endif %}>
-                                <span class="text-sm">{{ row[1] }} > {{ row[2] }}</span>
-                            </li>
-                        {% endfor %}
-                    {% else %}
-                        <p class="text-gray-400 text-sm text-center py-4">Vous n'avez aucun mot pour l'instant</p>
-                    {% endif %}
-                </ul>
-            </div>
+    {% if rows %}
+        {% for row in rows %}
+            <input type="hidden" name="word_id_{{ loop.index }}" value="{{ row[0] }}">
+            <li class="flex items-center gap-3">
+                <input type="checkbox" name="check_{{ loop.index }}" value="1" {% if row[3] == 1 %}checked{% endif %}>
+                <span class="text-sm">{{ row[1] }} > {{ row[2] }}</span>
+            </li>
+        {% endfor %}
+    {% else %}
+        <p class="text-gray-400 text-sm text-center py-4">Vous n'avez aucun mot pour l'instant</p>
+    {% endif %}
+</ul>
+            </div>    
+            
+            
+            <div class="bg-white bg-opacity-70 backdrop-filter backdrop-blur-md border border-gray-200 rounded-lg shadow-lg p-6">
+     
 
+            
             <button type="submit"
                     name="update_settings"
                     value="true"
                     class="w-full bg-purple-400 text-white px-4 py-2 rounded-lg hover:bg-purple-500 transition font-medium text-sm mb-2">
-                Update settings
+                Update
             </button>
-
+            </form>
+            
+            <form method="POST">
             <button type="submit"
                     name="audio_generate"
                     value="true"
                     class="w-full bg-green-400 text-white px-4 py-2 rounded-lg hover:bg-green-500 transition font-medium text-sm mb-2">
                 Generate audio for words
             </button>
+            </form>
     </div>
 
 </div>
+
+    <div>
+        <form method="POST">
+        <button type="submit"
+                        name="vocab_auto"
+                        value="true"
+                        class="w-full bg-green-400 text-white px-4 py-2 rounded-lg hover:bg-green-500 transition font-medium text-sm mb-2">
+                        Auto vocab      
+                </button>
+        </form>
+    </div>
 
 </main>
 

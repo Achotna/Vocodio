@@ -145,7 +145,7 @@ VOICES = {
 
 #Google Text to Speech API setup
 
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "C:\\Users\\Eleve\\Desktop\\Language_App\\tts_service_account.json"
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "D:\\Projects\\Language app\\tts_service_account.json"
 client = texttospeech.TextToSpeechClient()
 
 #
@@ -471,6 +471,18 @@ def index():
         conn.commit()
         ###################################################################################
 
+        test=[{"lang1": "avion", "lang2": "plane"}, {"lang1": "valise", "lang2": "suitcase"}]
+        vocab_auto= request.form.get("vocab_auto")
+        if vocab_auto:
+            data=[]
+            for entry in test:
+                data.append({"user_id": current_user.id, "lang1": entry["lang1"], "lang2": entry["lang2"], "status": 0})
+            new_entry_df = pd.DataFrame(data)
+            new_entry_df.to_sql("vocab", con=engine, if_exists="append", index=False)
+            print("Auto vocab inserted")
+
+
+
 
 
         ####################################
@@ -511,15 +523,19 @@ def index():
 
         update = request.form.get("update_settings")
         if update:
-            status_list = []
-            for i in range(1, len(rows)+1):
-                check = request.form.get(f"check_{i}")
+            i = 1
+            while True:
                 word_id = request.form.get(f"word_id_{i}")
-                status_list.append(1 if check else 0)
-                new_status = 1 if check else 0
+                if not word_id:
+                    break
+
+                # If checkbox unchecked, get() returns None → default to 0
+                new_status = int(request.form.get(f"check_{i}", 0))
+
                 cursor.execute("UPDATE vocab SET status = ? WHERE id = ?", (new_status, word_id))
+                i += 1
             conn.commit()
-            print(status_list)
+
 
 
         ####################################
@@ -623,6 +639,7 @@ def index():
         cursor.execute("SELECT id, lang1, lang2, status FROM vocab WHERE user_id = ?", (current_user.id,))
         
         rows = cursor.fetchall()
+        conn.commit()
         
         print(rows)
         conn.close()
@@ -630,7 +647,7 @@ def index():
     
 
 
-    return render_template('index.html', rows=rows, pause_duration=pause_duration, gender_voice=gender_voice, num_loops=num_loops, language1=language1, language2=language2)
+    return render_template('index.html', rows=rows, pause_duration=pause_duration, gender_voice=gender_voice, num_loops=num_loops, language1=language1, language2=language2, username=current_user.username)
 
 
 
