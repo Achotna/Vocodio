@@ -1,0 +1,55 @@
+.animated-gradient {
+background: linear-gradient(270deg, #e0e7ff, #f3e8ff, #fce7f3, #dbeafe);
+background-size: 300% 300%;
+animation: gradientShift 20s ease infinite;
+}
+
+.dark .animated-gradient {
+background: linear-gradient(270deg, #1e1b4b, #3d2569, #1a0533, #0f172a);
+background-size: 300% 300%;
+animation: gradientShift 20s ease infinite;
+}
+
+@keyframes gradientShift {
+0%   { background-position: 0% 50%; }
+50%  { background-position: 100% 50%; }
+100% { background-position: 0% 50%; }
+}
+
+.fade-up {
+opacity: 0;
+transform: translateY(24px);
+animation: fadeUp 0.7s ease forwards;
+}
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.25s; }
+.delay-3 { animation-delay: 0.4s; }
+.delay-4 { animation-delay: 0.55s; }
+.delay-5 { animation-delay: 0.7s; }
+@keyframes fadeUp {
+to { opacity: 1; transform: translateY(0); }
+}
+
+.card-pop {
+opacity: 0;
+transform: translateY(30px) scale(0.97);
+animation: cardPop 0.6s ease forwards;
+}
+.delay-6  { animation-delay: 0.8s; }
+.delay-7  { animation-delay: 0.95s; }
+.delay-8  { animation-delay: 1.1s; }
+.delay-9  { animation-delay: 1.25s; }
+.delay-10 { animation-delay: 1.4s; }
+@keyframes cardPop {
+to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.dark .card {
+background-color: rgba(30, 27, 75, 0.6);
+border-color: rgba(139, 92, 246, 0.2);
+}
+.dark .card h3 { color: #e2e8f0; }
+.dark .card p  { color: #94a3b8; }
+
+#darkmode-toggle { transition: transform 0.3s ease; }
+#darkmode-toggle:hover { transform: rotate(20deg); }

@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Language App</title>
 
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
@@ -13,84 +12,158 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
 
+    <script>tailwind.config = { darkMode: 'class' }</script>
+
+    <script>
+        (function() {
+            const stored = localStorage.getItem("theme");
+            const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+            if (stored === "dark" || (!stored && prefersDark)) {
+                document.documentElement.classList.add("dark");
+            }
+        })();
+    </script>
+
 </head>
 
-<html>
+<body class="animated-gradient min-h-screen flex flex-col dark:text-slate-300 transition-colors duration-500">
 
-    <body class="min-h-screen bg-gradient-to-br from-indigo-100 to-purple-100">
-
-    <header class="fixed top-0 left-0 w-full bg-white bg-opacity-70 backdrop-filter backdrop-blur-md shadow-md z-10">
-    <div class="container mx-auto flex items-center justify-between py-4 px-6">
-    <a href="/" class="text-xl font-bold text-gray-800">Language App</a>
-    <nav>
-        <ul class="flex space-x-6">
-            <li><a href="{{ url_for('register') }}" class="text-gray-600 hover:text-gray-800">S'inscrire</a></li>
-            <li><a href="{{ url_for('login') }}" class="text-gray-600 hover:text-gray-800">Connexion</a></li>
-        </ul>
-    </nav>
-    </div>
+    <header class="fixed top-0 left-0 w-full z-10
+                   bg-white bg-opacity-70 backdrop-filter backdrop-blur-md shadow-md
+                   dark:bg-slate-900 dark:bg-opacity-70 transition-colors duration-500">
+        <div class="container mx-auto flex items-center justify-between py-4 px-6">
+            <a href="/" class="text-xl font-bold text-gray-800 dark:text-white">Language App</a>
+            <nav>
+                <ul class="flex items-center space-x-4">
+                    <li>
+                        <a href="{{ url_for('register') }}"
+                           class="text-gray-600 hover:text-gray-800 border border-gray-300 px-4 py-2 rounded hover:bg-gray-100 transition
+                                  dark:text-slate-300 dark:border-slate-600 dark:hover:bg-slate-700">
+                            S'inscrire
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('login') }}"
+                           class="bg-purple-400 text-white px-4 py-2 rounded hover:bg-purple-500 transition">
+                            Connexion
+                        </a>
+                    </li>
+                    <li>
+                        <button id="darkmode-toggle" title="Changer de thème"
+                                class="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-700 transition">
+                            <img id="theme-icon"
+                                 src="{{ url_for('static', filename='images/dark_mode_inv.png') }}"
+                                 alt="Changer de thème"
+                                 class="w-5 h-5">
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+        </div>
     </header>
 
-    <main class="pt-28 pb-16 px-6">
+    <main class="flex-grow pt-28 pb-16 px-6">
+
         <div class="max-w-3xl mx-auto text-center mb-16">
-            <p class="text-purple-400 text-sm font-semibold tracking-widest uppercase mb-3">Votre chemin vers l'apprentissage commence dès ici</p>
-            <h1 class="text-5xl font-bold text-gray-800 mb-5 leading-tight">
+            <p class="fade-up delay-1 text-purple-400 text-sm font-semibold tracking-widest uppercase mb-3">
+                Votre chemin vers l'apprentissage commence dès ici
+            </p>
+            <h1 class="fade-up delay-2 text-5xl font-bold text-gray-800 dark:text-white mb-5 leading-tight">
                 Apprenez et révisez,<br>
                 <span class="text-purple-500">où que vous soyez</span>
             </h1>
-            <p class="text-gray-500 text-lg mb-8 max-w-xl mx-auto">
+            <p class="fade-up delay-3 text-gray-500 dark:text-slate-400 text-lg mb-8 max-w-xl mx-auto">
                 Importez vos listes de vocabulaire et laissez notre application vous aider à apprendre et réviser efficacement, à tout moment, où que vous soyez.
             </p>
-            <div class="flex justify-center gap-4 flex-wrap">
-                <a href="{{url_for('register')}}"
+            <div class="fade-up delay-4 flex justify-center gap-4 flex-wrap">
+                <a href="{{ url_for('register') }}"
                    class="bg-purple-400 text-white px-6 py-3 rounded hover:bg-purple-500 transition font-medium">
                     Commencez à apprendre dès maintenant
                 </a>
-                <a href="{{url_for('login')}}"
-                   class="border border-gray-300 text-gray-700 px-6 py-3 rounded hover:bg-gray-100 transition font-medium">
-                    Déjà un compte chez nous? Connectez-vous
+                <a href="{{ url_for('login') }}"
+                   class="border border-gray-300 text-gray-700 px-6 py-3 rounded hover:bg-gray-100 transition font-medium
+                          dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700">
+                    Déjà un compte chez nous ? Connectez-vous
                 </a>
             </div>
         </div>
 
-        <div class="relative flex py-5 items-center">
-            <div class="flex-grow border-t border-gray-400"></div>
-            <span class="flex-shrink mx-4 text-gray-400">Overview of what's super duper cool</span>
-            <div class="flex-grow border-t border-gray-400"></div>
+        <div class="fade-up delay-5 relative flex py-5 items-center max-w-4xl mx-auto mb-10">
+            <div class="flex-grow border-t border-gray-400 dark:border-slate-600"></div>
+            <span class="flex-shrink mx-4 text-gray-400 dark:text-slate-500">Overview of what's super duper cool</span>
+            <div class="flex-grow border-t border-gray-400 dark:border-slate-600"></div>
         </div>
 
-        <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 mb-20">
-            <div class="bg-white p-6 rounded-lg shadow-md">
+        <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+            <div class="card card-pop delay-6 bg-white p-6 rounded-xl shadow-md border border-transparent
+                        hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
                 <h3 class="text-xl font-bold text-gray-800 mb-3">Bop</h3>
                 <p class="text-gray-500">Description ?</p>
             </div>
-            <div class="bg-white p-6 rounded-lg shadow-md">
+            <div class="card card-pop delay-7 bg-white p-6 rounded-xl shadow-md border border-transparent
+                        hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
                 <h3 class="text-xl font-bold text-gray-800 mb-3">Bibop</h3>
                 <p class="text-gray-500">Mettez votre description ici les enfants</p>
             </div>
-            <div class="bg-white p-6 rounded-lg shadow-md">
+            <div class="card card-pop delay-8 bg-white p-6 rounded-xl shadow-md border border-transparent
+                        hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
                 <h3 class="text-xl font-bold text-gray-800 mb-3">LE STYLE</h3>
                 <p class="text-gray-500">Pour toute tentative de contact pour LE STYLE, veuillez ne pas contacter, merci.</p>
             </div>
         </div>
 
         <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 mb-20">
-            <div class="bg-white p-6 rounded-lg shadow-md">
-                <h3 class="text-xl font-bold text-gray-800 mb-3">Our project</h3>
-                <p class="text-gray-500">I wanted to add a description of our project here tell me watcha think guys. We could mention that it was made for Mr Blesch etc.</p>
+            <div class="card card-pop delay-9 bg-white p-6 rounded-xl shadow-md border border-transparent
+                        hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+                <h3 class="text-xl font-bold text-gray-800 mb-3">Notre projet</h3>
+                <p class="text-gray-500">Description du projet ici — on pourrait mentionner que c'était pour M. Blesch, etc.</p>
             </div>
-            <div class="bg-white p-6 rounded-lg shadow-md">
-                <h3 class="text-xl font-bold text-gray-800 mb-3">Gallery</h3>
-                <p class="text-gray-500">Pictures, illustrations here perhaps?</p>
+            <div class="card card-pop delay-10 bg-white p-6 rounded-xl shadow-md border border-transparent
+                        hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+                <h3 class="text-xl font-bold text-gray-800 mb-3">Galerie</h3>
+                <p class="text-gray-500">Photos, illustrations ici peut-être ?</p>
             </div>
         </div>
 
     </main>
 
-    <footer class="bg-white bg-opacity-70 backdrop-filter backdrop-blur-md shadow-inner">
-        <div class="max-w-5xl mx-auto px-6 py-6 flex flex-col md:flex-row items-center justify-between text-gray-600 text-center"> &copy; 2025 Language App. All rights reserved.
+    <footer class="bg-white bg-opacity-70 backdrop-filter backdrop-blur-md shadow-inner
+                   dark:bg-slate-900 dark:bg-opacity-70 transition-colors duration-500">
+        <div class="max-w-5xl mx-auto px-6 py-6 text-center text-gray-600 dark:text-slate-500 text-sm">
+            &copy; 2025 Language App. All rights reserved.
         </div>
     </footer>
+
+    <script> 
+
+        const toggleDarkMode = document.getElementById("darkmode-toggle");
+        const themeIcon = document.getElementById("theme-icon");
+
+        const iconDark  = "{{ url_for('static', filename='images/dark_mode_inv.png') }}";
+        const iconLight = "{{ url_for('static', filename='images/light_mode.png') }}";
+
+        function initTheme() {
+            const storedTheme = localStorage.getItem("theme");
+            const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+            if (storedTheme === "dark" || (!storedTheme && prefersDark)) {
+                document.documentElement.classList.add("dark");
+                themeIcon.src = iconLight; 
+            } else {
+                document.documentElement.classList.remove("dark");
+                themeIcon.src = iconDark;  
+            }
+        }
+
+        initTheme();
+
+        toggleDarkMode.addEventListener("click", () => {
+            document.documentElement.classList.toggle("dark");
+            const isDark = document.documentElement.classList.contains("dark");
+            localStorage.setItem("theme", isDark ? "dark" : "light");
+            themeIcon.src = isDark ? iconLight : iconDark;
+        });
+    </script> 
 
 </body>
 </html>
