@@ -16,13 +16,13 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import InputRequired, Length, ValidationError
 
+#pip install Flask Flask-Dropzone pandas SQLAlchemy google-cloud-texttospeech pydub flask-bcrypt flask-login flask-wtf wtforms
 
 # ============================#
 #            SETUP            #
 # ============================#
-
 app = Flask(__name__)
-app.config['SECRET_KEY'] = "antooghghdf"
+app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY", "dev-key")
 bcrypt = Bcrypt(app)
 
 login_manager = LoginManager()
@@ -145,7 +145,7 @@ VOICES = {
 
 #Google Text to Speech API setup
 
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "D:\\Projects\\Language app\\tts_service_account.json"
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "E:\\Projects\\Language app\\tts_service_account.json"
 client = texttospeech.TextToSpeechClient()
 
 #
@@ -212,8 +212,9 @@ def concatenate_audios(audio_files, output_file, num_loops):
     final_audio = AudioSegment.empty()
      
     
-    for file in audio_files:
-        final_audio += AudioSegment.from_wav(file)
+    for _ in range(num_loops):
+        for file in audio_files:
+            final_audio += AudioSegment.from_wav(file)
 
     final_audio.export(output_file, format="wav")
 
@@ -372,7 +373,7 @@ def initialize_databases():
     cursor.execute("""
             CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                username TEXT NOT NULL,
+                username TEXT NOT NULL UNIQUE,
                 password TEXT NOT NULL
             )
             """)
@@ -456,7 +457,7 @@ def index():
             new = {"user_id": current_user.id, "lang1": word, "lang2": translation, "status": 1}
             new_data = pd.DataFrame([new])
             #check for duplicates
-            existing_data = pd.read_sql(f"SELECT * FROM vocab WHERE user_id = {current_user.id}", engine)
+            existing_data = pd.read_sql("SELECT * FROM vocab WHERE user_id = ?", engine, params=(current_user.id,))
             new_data_to_insert = new_data[~new_data['lang1'].isin(existing_data['lang1'])]
             #insert 
             new_data_to_insert.to_sql("vocab", con=engine, if_exists="append", index=False)
@@ -596,17 +597,12 @@ def index():
             final_audio_all = AudioSegment.empty()
             for _ in range(num_loops): #nb de repetitions de chaque sequence
                 #Génération audios complets pour chaque entrée => à adapter pour la BDD
-                final_audio_all = AudioSegment.empty()
                 bip = Sine(500).to_audio_segment(duration=300)
 
-                for i, (index, row) in enumerate(df.iterrows()):
-                    word = row["word"]
-                    translation = row["translation"] 
-                    
-                    #check if the user has chosen num_loops, if not set to 1
-                    #num_loops = int(request.form.get("num_loops", 1))
+                for i, row in enumerate(df.itertuples(), start=1):
+                    word = row.word
+                    translation = row.translation
 
-                    #Audio pour une ligne
                     final_audio_path = generate_audio_for_entry(
                         entry={
                             "word": word,
@@ -617,7 +613,7 @@ def index():
                         translation_lang=USER_CONFIG["translation_lang"],
                         target_gender=USER_CONFIG["target_gender"],
                         translation_gender=USER_CONFIG["translation_gender"],
-                        index=index + 1,
+                        index=i,  # clean index
                         num_loops=num_loops
                     )
 
