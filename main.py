@@ -16,9 +16,26 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import InputRequired, Length, ValidationError
 
+from flask import send_file
 
+# .\.venv\Scripts\Activate.ps1     
 
 #pip install Flask Flask-Dropzone pandas SQLAlchemy google-cloud-texttospeech pydub flask-bcrypt flask-login flask-wtf wtforms
+
+
+import glob
+
+def clear_audio_cache():
+    folders = [WORDS_DIR, TRANS_DIR, SILENCE_DIR, FINAL_DIR]
+
+    for folder in folders:
+        files = glob.glob(os.path.join(folder, "*"))
+        for f in files:
+            try:
+                os.remove(f)
+            except Exception as e:
+                print("Skip file:", f, e)
+
 
 # ============================#
 #            SETUP            #
@@ -147,7 +164,7 @@ VOICES = {
 
 #Google Text to Speech API setup
 
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "E:\\Projects\\Language app\\tts_service_account.json"
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "E:\\Projects\\Vocodio\\tts_service_account.json"
 client = texttospeech.TextToSpeechClient()
 
 #
@@ -210,13 +227,11 @@ def generate_silence(duration_seconds: float) -> str:
 
 
 # Assemblage des audios
-def concatenate_audios(audio_files, output_file, num_loops):
+def concatenate_audios(audio_files, output_file):
     final_audio = AudioSegment.empty()
      
-    
-    for _ in range(num_loops):
-        for file in audio_files:
-            final_audio += AudioSegment.from_wav(file)
+    for file in audio_files:
+        final_audio += AudioSegment.from_wav(file)
 
     final_audio.export(output_file, format="wav")
 
@@ -230,7 +245,6 @@ def generate_audio_for_entry(
     target_gender,
     translation_gender,
     index,
-    num_loops
 ):
     word = entry["word"]
     translation = entry["translation"]
@@ -251,8 +265,7 @@ def generate_audio_for_entry(
     f"{index}_"
     f"{target_lang}_{target_gender}_"
     f"{translation_lang}_{translation_gender}_"
-    f"{delay_seconds}_"
-    f"{num_loops}.wav"
+    f"{delay_seconds}.wav"
 )
 
     if os.path.exists(final_file):
@@ -278,9 +291,7 @@ def generate_audio_for_entry(
 
     concatenate_audios(
         [target_file, silence_file, translation_file],
-        final_file,
-        num_loops
-    )
+        final_file,)
 
     return final_file
 
@@ -588,6 +599,7 @@ def index():
 
         audio_generate = request.form.get("audio_generate")
         if audio_generate:
+            clear_audio_cache()
             # ============================
             # Configuration utilisateur
             # ============================
@@ -611,6 +623,7 @@ def index():
             for _ in range(num_loops): #nb de repetitions de chaque sequence
                 #Génération audios complets pour chaque entrée => à adapter pour la BDD
                 bip = Sine(500).to_audio_segment(duration=300)
+                silence_bip=AudioSegment.silent(duration=700)
 
                 for i, row in enumerate(df.itertuples(), start=1):
                     word = row.word
@@ -627,15 +640,14 @@ def index():
                         target_gender=USER_CONFIG["target_gender"],
                         translation_gender=USER_CONFIG["translation_gender"],
                         index=i,  # clean index
-                        num_loops=num_loops
                     )
 
                     #Ajout du segment mot à l'audio final
                     final_audio_all += AudioSegment.from_wav(final_audio_path)
 
                     #Ajout du bip entre les mots
-                    if i < len(df) - 1:
-                        final_audio_all += bip
+                    if i < len(df):
+                        final_audio_all = final_audio_all + silence_bip + bip + silence_bip
 
             #Export de l'audio final complet
             final_audio_all.export(
@@ -658,6 +670,13 @@ def index():
 
     return render_template('index.html', rows=rows, pause_duration=pause_duration, gender_voice=gender_voice, num_loops=num_loops, language1=language1, language2=language2, username=current_user.username)
 
+
+@app.route('/download_audio')
+def download_audio():
+    if not os.path.exists("E:\\Projects\\Vocodio\\audio\\final\\final_output.mp3"):
+        return "File not found. Generate audio first."
+    else:
+        return send_file("E:\\Projects\\Vocodio\\audio\\final\\final_output.mp3", as_attachment=True)
 
 
 
