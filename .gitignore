@@ -2,3 +2,4 @@
 tts_service_account.json
 __pycache__/
 .env
+et --soft HEAD~1
