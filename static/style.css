@@ -53,3 +53,18 @@ border-color: rgba(139, 92, 246, 0.2);
 
 #darkmode-toggle { transition: transform 0.3s ease; }
 #darkmode-toggle:hover { transform: rotate(20deg); }
+
+.dark .dropzone {
+  background-color: rgb(51 65 85);  
+  border-color: #755bc3;  
+}
+
+.dark .dropzone .dz-message,
+.dark .dropzone .dz-message span {
+  color: rgb(203 213 225);         
+}
+
+.dark .dropzone .dz-preview .dz-filename span,
+.dark .dropzone .dz-preview .dz-size {
+  color: rgb(203 213 225);
+}

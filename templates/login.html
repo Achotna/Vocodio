@@ -3,34 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Connexion – Language App</title>
+    <title>Connexion – Vocodio</title>
 
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
     <script src="https://cdn.tailwindcss.com"></script>
+
     <script>tailwind.config = { darkMode: 'class' }</script>
-    <script>
-        (function() {
-            const stored = localStorage.getItem("theme");
-            const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-            if (stored === "dark" || (!stored && prefersDark)) {
-                document.documentElement.classList.add("dark");
-            }
-        })();
-    </script>
+    
 </head>
 
 <html>
+
 <body class="animated-gradient min-h-screen flex flex-col font-[Noto_Sans] transition-colors duration-500">
 
-    <!-- HEADER — identical to index -->
     <header class="fixed top-0 left-0 w-full z-10
                    bg-white bg-opacity-70 backdrop-filter backdrop-blur-md shadow-md
                    dark:bg-slate-900 dark:bg-opacity-70 transition-colors duration-500">
         <div class="container mx-auto flex items-center justify-between py-4 px-6">
-            <a href="/" class="text-xl font-bold text-gray-800 dark:text-white">Language App</a>
+
+            <div class="flex items-center space-x-3">
+
+                <img src="{{ url_for('static', filename='images/logo_white.png') }}" alt="Dark Mode logo" 
+                class="w-10 h-10" id="logo">
+
+                <a href="/" class="text-xl font-bold text-gray-800 dark:text-white">Vocodio</a>
+
+            </div>
+
             <nav>
                 <ul class="flex items-center space-x-4">
                     <li>
@@ -47,9 +50,8 @@
                         </a>
                     </li>
                     <li>
-                        <button id="darkmode-toggle"
-                                class="text-xl px-2 py-1 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-700 transition"
-                                title="Changer de thème">
+                        <button id="darkmode-toggle" title="Changer de thème"
+                                class="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-700 transition">
                             <img id="theme-icon"
                                  src="{{ url_for('static', filename='images/dark_mode_inv.png') }}"
                                  alt="Changer de thème"
@@ -92,7 +94,7 @@
                     </label>
                     <input type="password" name="password" required
                            class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm
-                                  focus:outline-none focus:ring-2 focus:ring-purple-400 transition dark:text-white"
+                                  focus:outline-none focus:ring-2 focus:ring-purple-400 transition"
                            placeholder="password">
 
                 </div>
@@ -124,44 +126,32 @@
         </div>
     </main>
 
-    <footer class="bg-white bg-opacity-70 backdrop-filter backdrop-blur-md shadow-inner
-                   dark:bg-slate-900 dark:bg-opacity-70 transition-colors duration-500">
-        <div class="max-w-5xl mx-auto px-6 py-6 text-center text-gray-400 dark:text-slate-500 text-sm">
-            &copy; 2025 Language App. All rights reserved.
-        </div>
+    <footer class="bg-white bg-opacity-70 backdrop-filter backdrop-blur-md
+               dark:bg-slate-900 dark:bg-opacity-70 transition-colors duration-500
+               border-t border-gray-200 dark:border-white">
+
+    <div class="max-w-5xl mx-auto px-6 py-5 flex items-center gap-4">
+
+    <img src="{{ url_for('static', filename='images/logo_white.png') }}" 
+            alt="Dark Mode logo" 
+            class="w-12 h-12" id="logo-footer">
+
+
+    <div class="border-lg border-gray-300 dark:border-slate-600 pl-4">
+      <p class="text-md text-gray-400 dark:text-slate-500 mb-1">
+        &copy; 2025 Vocodio. Tous droits réservés.
+      </p>
+      <span class="inline-block text-md font-medium text-gray-600 dark:text-slate-400
+                   border border-gray-300 dark:border-slate-600 rounded px-2 py-0.5">
+        Made with ♥ at our places + canva :> MERCI MONSIEUR ELOPHE POUR VOTRE CONTRIBUTION CONTRIBUTIONNELLE DU BON FONCTIONNEMENT, DISTRIBUTION ET ENTRETIEN DE LA CLE API, NOTRE COEUR PALPITE EN Y PENSANT YOUHOU!!!!!
+      </span>
+    </div>
+
+    </div>
     </footer>
 
-    <script> 
-
-        const toggleDarkMode = document.getElementById("darkmode-toggle");
-        const themeIcon = document.getElementById("theme-icon");
-
-        const iconDark  = "{{ url_for('static', filename='images/dark_mode_inv.png') }}";
-        const iconLight = "{{ url_for('static', filename='images/light_mode.png') }}";
-
-        function initTheme() {
-            const storedTheme = localStorage.getItem("theme");
-            const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-
-            if (storedTheme === "dark" || (!storedTheme && prefersDark)) {
-                document.documentElement.classList.add("dark");
-                themeIcon.src = iconLight; 
-            } else {
-                document.documentElement.classList.remove("dark");
-                themeIcon.src = iconDark;  
-            }
-        }
-
-        initTheme();
-
-        toggleDarkMode.addEventListener("click", () => {
-            document.documentElement.classList.toggle("dark");
-            const isDark = document.documentElement.classList.contains("dark");
-            localStorage.setItem("theme", isDark ? "dark" : "light");
-            themeIcon.src = isDark ? iconLight : iconDark;
-        });
-    </script> 
-
-
 </body>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
 </html>

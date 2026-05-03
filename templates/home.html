@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Language App</title>
+    <title>Vocodio</title>
 
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,16 +14,6 @@
 
     <script>tailwind.config = { darkMode: 'class' }</script>
 
-    <script>
-        (function() {
-            const stored = localStorage.getItem("theme");
-            const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-            if (stored === "dark" || (!stored && prefersDark)) {
-                document.documentElement.classList.add("dark");
-            }
-        })();
-    </script>
-
 </head>
 
 <body class="animated-gradient min-h-screen flex flex-col dark:text-slate-300 transition-colors duration-500">
@@ -32,7 +22,16 @@
                    bg-white bg-opacity-70 backdrop-filter backdrop-blur-md shadow-md
                    dark:bg-slate-900 dark:bg-opacity-70 transition-colors duration-500">
         <div class="container mx-auto flex items-center justify-between py-4 px-6">
-            <a href="/" class="text-xl font-bold text-gray-800 dark:text-white">Language App</a>
+
+            <div class="flex items-center space-x-3">
+
+                <img src="{{ url_for('static', filename='images/logo_white.png') }}" alt="Dark mode logo" 
+                class="w-10 h-10" id="logo">
+
+                <a href="/" class="text-xl font-bold text-gray-800 dark:text-white">Vocodio</a>
+
+            </div>
+
             <nav>
                 <ul class="flex items-center space-x-4">
                     <li>
@@ -81,7 +80,7 @@
                     Commencez à apprendre dès maintenant
                 </a>
                 <a href="{{ url_for('login') }}"
-                   class="border border-gray-300 text-gray-700 px-6 py-3 rounded hover:bg-gray-100 transition font-medium
+                   class="border border-purple-500 text-gray-700 px-6 py-3 rounded hover:bg-purple-100 transition font-medium
                           dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700">
                     Déjà un compte chez nous ? Connectez-vous
                 </a>
@@ -89,81 +88,84 @@
         </div>
 
         <div class="fade-up delay-5 relative flex py-5 items-center max-w-4xl mx-auto mb-10">
-            <div class="flex-grow border-t border-gray-400 dark:border-slate-600"></div>
-            <span class="flex-shrink mx-4 text-gray-400 dark:text-slate-500">Overview of what's super duper cool</span>
-            <div class="flex-grow border-t border-gray-400 dark:border-slate-600"></div>
+            <div class="flex-grow border-t border-gray-500 dark:border-slate-400"></div>
+            <span class="flex-shrink mx-4 text-gray-500 dark:text-slate-300">Fonctionnalités</span>
+            <div class="flex-grow border-t border-gray-500 dark:border-slate-400"></div>
         </div>
 
         <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
             <div class="card card-pop delay-6 bg-white p-6 rounded-xl shadow-md border border-transparent
                         hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-                <h3 class="text-xl font-bold text-gray-800 mb-3">Bop</h3>
-                <p class="text-gray-500">Description ?</p>
+                <h3 class="text-xl font-bold text-gray-800 mb-3">Vocodio, qu'est-ce que c'est ?</h3>
+                <p class="text-gray-500
+                    dark:text-slate-300">
+                    Vous apprenez une langue ? Remplacez vos listes de vocabulaire ou vos flashcards par des audios ! 
+                    Avec Vocodio, transformez vos listes de mots en audios intelligents : écoutez le mot, répétez et réfléchissez, puis entendez la traduction.
+                </p>
             </div>
+
             <div class="card card-pop delay-7 bg-white p-6 rounded-xl shadow-md border border-transparent
                         hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-                <h3 class="text-xl font-bold text-gray-800 mb-3">Bibop</h3>
-                <p class="text-gray-500">Mettez votre description ici les enfants</p>
+                <h3 class="text-xl font-bold text-gray-800 mb-3">Notre projet</h3>
+                <p class="text-gray-500
+                    dark:text-slate-300">
+                    Vocodio est un projet lancé par trois lycéen.nes solicité.es par leur professeur d’anglais, à la recherche d’un moyen de réviser leur vocabulaire de chinois pendant leur footing !
+                </p>
             </div>
             <div class="card card-pop delay-8 bg-white p-6 rounded-xl shadow-md border border-transparent
                         hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-                <h3 class="text-xl font-bold text-gray-800 mb-3">LE STYLE</h3>
-                <p class="text-gray-500">Pour toute tentative de contact pour LE STYLE, veuillez ne pas contacter, merci.</p>
+                <h3 class="text-xl font-bold text-gray-800 mb-3">La méthode qui fait vraiment retenir</h3>
+                <p class="text-gray-500
+                    dark:text-slate-300">
+                    Vocodio est une solution innovante qui transforme une simple liste en une expérience d’apprentissage immmersive ! Grâce aux pauses intégrées, votre cerveau travaille vraiment : vous essayez de deviner avant d’entendre la réponse. Résultat : une mémorisation plus rapide, durable et entièrement personnalisable.
+                </p>
             </div>
         </div>
 
-        <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 mb-20">
+        <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-1 gap-6 mb-20">
             <div class="card card-pop delay-9 bg-white p-6 rounded-xl shadow-md border border-transparent
                         hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-                <h3 class="text-xl font-bold text-gray-800 mb-3">Notre projet</h3>
-                <p class="text-gray-500">Description du projet ici — on pourrait mentionner que c'était pour M. Blesch, etc.</p>
-            </div>
-            <div class="card card-pop delay-10 bg-white p-6 rounded-xl shadow-md border border-transparent
-                        hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-                <h3 class="text-xl font-bold text-gray-800 mb-3">Galerie</h3>
-                <p class="text-gray-500">Photos, illustrations ici peut-être ?</p>
+                <h3 class="text-xl font-bold text-gray-800 mb-3">Vos mots, votre rythme, votre apprentissage</h3>
+                <ul class="list-disc text-gray-500 dark:text-slate-300">
+                    <li>Créez vos propres listes d'audios 100% personnalisables, répondant à vos propres besoins, puis révisez où que vous soyez et quoi que vous fassiez !</li>
+                    <li>Sélectionnez vos langues</li>
+                    <li>Changez les voix des audios selon vos préférences</li>
+                    <li>Choisissez le temps de pause entre le mot et sa traduction</li>
+                    <li>Choisissez le nombre de répétitions des mots</li>
+                    <li>Apprenez comme si vous écoutiez de la musique : en marchant, en cuisinant, dans les transports... </li>
+                </ul>
+                <p class="text-gray-500 italic">Plus de problème de manque de temps pour réviser votre vocabulaire : chaque moment devient une opportunité d’apprentissage !</p>
             </div>
         </div>
 
     </main>
 
-    <footer class="bg-white bg-opacity-70 backdrop-filter backdrop-blur-md shadow-inner
-                   dark:bg-slate-900 dark:bg-opacity-70 transition-colors duration-500">
-        <div class="max-w-5xl mx-auto px-6 py-6 text-center text-gray-600 dark:text-slate-500 text-sm">
-            &copy; 2025 Language App. All rights reserved.
-        </div>
-    </footer>
+<footer class="bg-white bg-opacity-70 backdrop-filter backdrop-blur-md
+               dark:bg-slate-900 dark:bg-opacity-70 transition-colors duration-500
+               border-t border-gray-200 dark:border-white">
 
-    <script> 
+  <div class="max-w-5xl mx-auto px-6 py-5 flex items-center gap-4">
 
-        const toggleDarkMode = document.getElementById("darkmode-toggle");
-        const themeIcon = document.getElementById("theme-icon");
+    <img src="{{ url_for('static', filename='images/logo_white.png') }}" 
+            alt="Dark Mode logo" 
+            class="w-12 h-12" id="logo-footer">
 
-        const iconDark  = "{{ url_for('static', filename='images/dark_mode_inv.png') }}";
-        const iconLight = "{{ url_for('static', filename='images/light_mode.png') }}";
 
-        function initTheme() {
-            const storedTheme = localStorage.getItem("theme");
-            const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    <div class="border-lg border-gray-300 dark:border-slate-600 pl-4">
+      <p class="text-md text-gray-400 dark:text-slate-500 mb-1">
+        &copy; 2025 Vocodio. Tous droits réservés.
+      </p>
+      <span class="inline-block text-md font-medium text-gray-600 dark:text-slate-400
+                   border border-gray-300 dark:border-slate-600 rounded px-2 py-0.5">
+        Made with ♥ at our places + canva :> MERCI MONSIEUR ELOPHE POUR VOTRE CONTRIBUTION CONTRIBUTIONNELLE DU BON FONCTIONNEMENT, DISTRIBUTION ET ENTRETIEN DE LA CLE API, NOTRE COEUR PALPITE EN Y PENSANT YOUHOU!!!!!
+      </span>
+    </div>
 
-            if (storedTheme === "dark" || (!storedTheme && prefersDark)) {
-                document.documentElement.classList.add("dark");
-                themeIcon.src = iconLight; 
-            } else {
-                document.documentElement.classList.remove("dark");
-                themeIcon.src = iconDark;  
-            }
-        }
-
-        initTheme();
-
-        toggleDarkMode.addEventListener("click", () => {
-            document.documentElement.classList.toggle("dark");
-            const isDark = document.documentElement.classList.contains("dark");
-            localStorage.setItem("theme", isDark ? "dark" : "light");
-            themeIcon.src = isDark ? iconLight : iconDark;
-        });
-    </script> 
+  </div>
+</footer>
 
 </body>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
 </html>
