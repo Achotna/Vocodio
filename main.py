@@ -164,7 +164,7 @@ VOICES = {
 
 #Google Text to Speech API setup
 
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "C:\\Users\\Eleve\\Desktop\\Language_App\\tts_service_account.json"
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "E:\\Projects\\Vocodio\\tts_service_account.json"
 client = texttospeech.TextToSpeechClient()
 
 #
