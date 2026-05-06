@@ -265,26 +265,58 @@
                 {% endif %}
               </div>
 
-            </div> <!-- Fin div section 2 card 2-->
-          </div> <!-- Fin division card 2-->
 
-        </div> <!-- Fin card 2-->
+          <input type="text" name="theme" placeholder="votre thème">
+          <input type="number" name="nb_words" placeholder="nombre de mots" min="1">
+              <button type="submit" name="vocab_auto" value="true"
+                      class="relative px-2 py-2 border-2 border-purple-400 overflow-hidden group text-center rounded-full cursor-pointer font-medium
+                      dark: text-slate-200">
+                <span class="absolute inset-0 bg-purple-200/75 translate-x-[-100%] group-hover:translate-x-0 rounded-full transition-transform duration-400
+                dark: bg-purple-300/75"></span>
+                <span class="relative z-10 text-slate-500 dark:text-slate-300 group-hover:text-slate-600 transition-colors duration-400
+                dark:text-slate-200 dark: group-hover:text-white">
+                  Vocabulaire automatique
+                </span>
+              </button>
 
+              <button type="submit" name="audio_generate" value="true"
+                      class="relative px-2 py-2 border-2 border-purple-400 overflow-hidden group text-center rounded-full cursor-pointer font-medium
+                      dark: text-slate-200">
+                <span class="absolute inset-0 bg-purple-200/75 translate-x-[-100%] group-hover:translate-x-0 rounded-full transition-transform duration-400
+                dark: bg-purple-300/75"></span>
+                <span class="relative z-10 text-slate-500 dark:text-slate-300 group-hover:text-slate-600 transition-colors duration-400
+                dark:text-slate-200 dark: group-hover:text-white">
+                  Générer l'audio
+                </span>
+              </button>
+              
+              <a href="/download_audio"
+                 class="relative px-2 py-2 border-2 border-purple-400 overflow-hidden group text-center rounded-full cursor-pointer font-medium
+                 dark: text-slate-200">
+                <span class="absolute inset-0 bg-purple-200/75 translate-x-[-100%] group-hover:translate-x-0 rounded-full transition-transform duration-400
+                dark: bg-purple-300/75"></span>
+                <span class="relative z-10 text-slate-500 dark:text-slate-300 group-hover:text-slate-600 transition-colors duration-400
+                dark:text-slate-200 dark: group-hover:text-white">
+                  Télécharger l'audio
+                </span>
+              </a>
+          </div>
+
+        </div>
       </form>
 
-    </div> <!-- Fin card 1 et 2-->
+      <div>
+        <h2>Mon fichier audio</h2>
 
-    <button type="submit" name="clear" value="true"
-    class="relative px-2 py-2 border-2 border-purple-400 overflow-hidden rounded-full group cursor-pointer font-medium mt-6
-    dark:text-slate-200">
-      <span class="absolute inset-0 bg-purple-200/75 translate-x-[-100%] group-hover:translate-x-0 rounded-full transition-transform duration-400
-      dark: bg-purple-300/75">
-      </span>
-      <span class="relative z-10 text-slate-500 group-hover:text-slate-600 transition-colors duration-400
-      dark:text-slate-200 dark: group-hover:text-white">
-      Réinitialiser la base de données
-      </span>
-    </button>
+<audio controls>
+    <source src="{{ url_for('static', filename='audio/final/final_output.mp3') }}" type="audio/mpeg">
+</audio>
+      </div>
+
+    </div>
+
+
+
 
   </main>
 
