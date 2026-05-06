@@ -228,7 +228,7 @@
 
 
           <input type="text" name="theme" placeholder="votre thème">
-          <input type="number" name="nb_words" placeholder="nombre de mots">
+          <input type="number" name="nb_words" placeholder="nombre de mots" min="1">
               <button type="submit" name="vocab_auto" value="true"
                       class="relative px-2 py-2 border-2 border-purple-400 overflow-hidden group text-center rounded-full cursor-pointer font-medium
                       dark: text-slate-200">
@@ -266,7 +266,19 @@
         </div>
       </form>
 
+      <div>
+        <h2>Mon fichier audio</h2>
+
+<audio controls>
+    <source src="{{ url_for('static', filename='audio/final/final_output.mp3') }}" type="audio/mpeg">
+</audio>
+      </div>
+
     </div>
+
+
+
+
   </main>
 
     <footer class="bg-white bg-opacity-70 backdrop-filter backdrop-blur-md
