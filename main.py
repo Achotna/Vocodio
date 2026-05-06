@@ -3,42 +3,32 @@ from flask_dropzone import Dropzone
 import pandas as pd
 from sqlalchemy import create_engine
 import sqlite3
-#import tts_zoe_code
 import os
 from google.cloud import texttospeech
 from pydub import AudioSegment
 from pydub.generators import Sine
-
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import InputRequired, Length, ValidationError
-
 from flask import send_file
-
 import ast
-
-
-# .\.venv\Scripts\Activate.ps1     
-
-#pip install Flask Flask-Dropzone pandas SQLAlchemy google-cloud-texttospeech pydub flask-bcrypt flask-login flask-wtf wtforms
-
-
-
-
-
-
 from openai import OpenAI
 from dotenv import load_dotenv
-import os
+import glob
 
-# Cle API
+ 
+
+# ============================#
+#            API_AI           #
+# ============================#
+#Chargement clé API
 load_dotenv()
 client_ai = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-# API
+#Fonction génération automatique
 def chat_with_gpt(theme, nb_words, lang1, lang2):
     try:
         response = client_ai.chat.completions.create(
@@ -54,20 +44,6 @@ def chat_with_gpt(theme, nb_words, lang1, lang2):
         print("API ERROR:", e)
         return None 
 
-
-
-import glob
-
-def clear_audio_cache():
-    folders = [WORDS_DIR, TRANS_DIR, SILENCE_DIR, FINAL_DIR]
-
-    for folder in folders:
-        files = glob.glob(os.path.join(folder, "*"))
-        for f in files:
-            try:
-                os.remove(f)
-            except Exception as e:
-                print("Skip file:", f, e)
 
 
 # ============================#
@@ -133,11 +109,11 @@ def load_user(user_id):
 
 
 ######################################## ============================ ################################################################
-########################################             ZOE              ################################################################
+########################################       Génération audio       ################################################################
 ######################################## ============================ ################################################################
 
 
-# Dictionnaire des voix#############
+# Dictionnaire des voix
 VOICES = {
     "cmn-CN": { # Chinois Mandarin (Chine)
         "female": "cmn-TW-Standard-A",
@@ -193,20 +169,31 @@ VOICES = {
     }
 }
 
+#Nettoyage du dossier audio avant chaque nouvelle génération
+def clear_audio_cache():
+    folders = [WORDS_DIR, TRANS_DIR, SILENCE_DIR, FINAL_DIR]
+
+    for folder in folders:
+        files = glob.glob(os.path.join(folder, "*"))
+        for f in files:
+            try:
+                os.remove(f)
+            except Exception as e:
+                print("Skip file:", f, e)
 
 
-#Google Text to Speech API setup
 
+#Google Text to Speech clé API
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "E:\\Projects\\Vocodio\\tts_service_account.json"
 client = texttospeech.TextToSpeechClient()
 
-#
 # Dossiers pour stockage audio
 BASE_DIR = "audio" 
 WORDS_DIR = f"{BASE_DIR}/words"
 TRANS_DIR = f"{BASE_DIR}/translations"
 SILENCE_DIR = f"{BASE_DIR}/silence" #delay between words, dépend du choix de l'utilisateur
 FINAL_DIR = "static/audio/final" #audios complets, fournis à l'utilisateur
+
 
 for d in [WORDS_DIR, TRANS_DIR, SILENCE_DIR, FINAL_DIR]:
     os.makedirs(d, exist_ok=True) #pour ne pas avoir d'erreur si le dossier existe déjà 
@@ -256,7 +243,6 @@ def generate_silence(duration_seconds: float) -> str:
 
     silence.export(filename, format="wav")
     return filename
-
 
 
 # Assemblage des audios
@@ -330,17 +316,15 @@ def generate_audio_for_entry(
 
 
 
-
-
 ######################################## ============================ ################################################################
-########################################             ANTO             ################################################################
+########################################     Comptes utilisateurs     ################################################################
 ######################################## ============================ ################################################################
 
+#creation compte
 @app.route("/register", methods=['GET','POST'])
 def register():
     form = RegisterForm()
     if form.validate_on_submit():
-        print("FORM VALID")   # test
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
         conn = sqlite3.connect("users.db")
         cursor = conn.cursor()
@@ -358,7 +342,7 @@ def register():
     return render_template('register.html', form=form)
 
 
-
+#se connecter
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     form = LoginForm()
@@ -380,7 +364,7 @@ def login():
             message_login = "User not found"
     return render_template('login.html', form=form, message_login=message_login)
 
-
+#se déconncter
 @app.route('/logout')
 @login_required
 def logout():
@@ -388,12 +372,15 @@ def logout():
     return redirect(url_for('login')) 
 
 
+#page d'accueil
+@app.route("/")
+def welcome():
+    return render_template('home.html')
 
 
-#engine = create_engine("sqlite:///./vocab.db")
-#engine = create_engine("sqlite:///./users.db")
-#engine = create_engine("sqlite:///./audios.db")
-
+######################################## ============================ ################################################################
+########################################        Base de donnée        ################################################################
+######################################## ============================ ################################################################
 def initialize_databases():
     #initialize database vocab
     engine = create_engine("sqlite:///./vocab.db")
@@ -427,32 +414,11 @@ def initialize_databases():
     print("Users database initialized")
 
 
-    #initialise db audios
-    engine = create_engine("sqlite:///./audios.db")
-    conn = sqlite3.connect("audios.db")
-    cursor = conn.cursor()
-    cursor.execute("""
-            CREATE TABLE IF NOT EXISTS audios (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                user_id INTEGER NOT NULL,
-                filename TEXT NOT NULL,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY(user_id) REFERENCES users(id)
-            )
-            """)
-    conn.commit()
-    print("Audios database initialized")
 
 
-
-
-
-@app.route("/")
-def home():
-    return render_template('home.html')
-
-
-
+######################################## ============================ ################################################################
+########################################            Vocodio           ################################################################
+######################################## ============================ ################################################################
 
 @app.route("/home",methods=["GET", "POST"])
 @login_required
@@ -474,7 +440,7 @@ def index():
 
 
         ####################################
-        #      insert from an exel file    #
+        #              EXCEL               #
         ####################################
 
         f = request.files.get("file")
@@ -482,18 +448,20 @@ def index():
         if f:
             file_name=f"{app.config['UPLOAD_FOLDER']}/{f.filename}"
             f.save(file_name)
-
             data = pd.read_excel(file_name)
             data.columns = ["lang1", "lang2"]
             data["status"] = 1  #is included in the audio by default
+            print('Fichier excel :')
             print(data.head())
-
-            #initialize database
+            #insert
             data["user_id"] = current_user.id
             data.to_sql('vocab', con=engine, if_exists='append', index=False)
             print("Data from excel file inserted into database")
 
-        #add new word
+
+        ####################################
+        #              MANUEL              #
+        ####################################
         word = request.form.get("word")
         translation= request.form.get("translation")
         if word and translation:
@@ -502,7 +470,8 @@ def index():
             #new entry
             new = {"user_id": current_user.id, "lang1": word, "lang2": translation, "status": 1}
             new_data = pd.DataFrame([new])
-            #check for duplicates
+            new_data['user_id'] = current_user.id
+            #check for duplicates > lang1
             existing_data = pd.read_sql("SELECT * FROM vocab WHERE user_id = ?", engine, params=(current_user.id,))
             new_data_to_insert = new_data[~new_data['lang1'].isin(existing_data['lang1'])]
             #insert 
@@ -519,11 +488,9 @@ def index():
         ###################################################################################
 
 
-#######################################################################################################################
-#######################################################################################################################
-#              AUTO               #####################################################################################
-#######################################################################################################################
-#######################################################################################################################
+        ####################################
+        #              AUTO                #
+        ####################################
         vocab_auto = request.form.get("vocab_auto")
         if vocab_auto:
             theme = request.form.get("theme")
@@ -540,20 +507,21 @@ def index():
             print(data)
             new_entry_df = pd.DataFrame(data)
             new_entry_df["user_id"] = current_user.id
-            new_entry_df.to_sql("vocab", con=engine, if_exists="append", index=False)
+            #check for duplicates > lang1
+            existing_data_2 = pd.read_sql("SELECT * FROM vocab WHERE user_id = ?", engine, params=(current_user.id,))
+            new_entry_df_to_insert = new_entry_df[~new_entry_df['lang1'].isin(existing_data_2['lang1'])]
+            #insert
+            new_entry_df_to_insert.to_sql("vocab", con=engine, if_exists="append", index=False)
             print("Auto vocab inserted")
-#######################################################################################################################
-#######################################################################################################################
-#######################################################################################################################
-#######################################################################################################################
-#######################################################################################################################
 
 
 
 
-        ####################################
-        #         clear database           #
-        ####################################
+
+
+        ############################################################################################################################
+        #         clear database           #########################################################################################
+        ############################################################################################################################
 
         clear= request.form.get("clear")
         if clear:
@@ -583,8 +551,13 @@ def index():
 
             print("Databases cleared")
 
+
+
+
+
+
         ####################################
-        #          upadate status          #
+        #           update status          #
         ####################################
 
         update = request.form.get("update_settings")
@@ -602,39 +575,6 @@ def index():
                 i += 1
             conn.commit()
 
-
-
-        ####################################
-        #     pause duration settings      #
-        ####################################
-        #pause_duration = request.form.get("pause_duration")
-        #if pause_duration:
-            #pause_duration = float(pause_duration)
-            #print(f"Pause duration set to {pause_duration} s")
-
-
-        ####################################
-        #      gender_voice setting        #
-        ####################################
-        #gender_voice = request.form.get("gender_voice") 
-        #if gender_voice:
-            #gender_voice = str(gender_voice)
-            #print(f"Gender voice: {gender_voice}")
-
-
-        ####################################
-        #        num_loops setting         #
-        ####################################
-        #num_loops = request.form.get("num_loops")
-        #if num_loops:  
-            #num_loops = int(num_loops)
-            #print(f"Number of loops set to: {num_loops}")
-
-#Language switch setting
-
-
-
-################################################################################################################################################################""
         
         
 
@@ -703,28 +643,28 @@ def index():
         print(rows)
         conn.close()
 
-    
-
-
     return render_template('index.html', rows=rows, pause_duration=pause_duration, gender_voice=gender_voice, num_loops=num_loops, language1=language1, language2=language2, username=current_user.username)
 
 
+#télécharger audio
 @app.route('/download_audio')
 def download_audio():
-    if not os.path.exists("E:\\Projects\\Vocodio\\audio\\final\\final_output.mp3"):
+    if not os.path.exists("audio/final/final_output.mp3"):
         return "File not found. Generate audio first."
     else:
-        return send_file("E:\\Projects\\Vocodio\\audio\\final\\final_output.mp3", as_attachment=True)
+        return send_file("audio/final/final_output.mp3", as_attachment=True)
 
 
-
-
+#run flask
 if __name__ == "__main__":
     initialize_databases()
     app.run(debug=True)
     
 
-
+#First time running? use this
 #$env:FLASK_APP = "main.py"
 #$env:FLASK_DEBUG = "1"
 #python -m flask run
+
+#activate the env
+# .\.venv\Scripts\Activate.ps1    
