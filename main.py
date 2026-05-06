@@ -567,16 +567,13 @@ def index():
                 word_id = request.form.get(f"word_id_{i}")
                 if not word_id:
                     break
-
                 # If checkbox unchecked, get() returns None → default to 0
                 new_status = int(request.form.get(f"check_{i}", 0))
-
                 cursor.execute("UPDATE vocab SET status = ? WHERE id = ?", (new_status, word_id))
                 i += 1
             conn.commit()
+        
 
-        
-        
 
         audio_generate = request.form.get("audio_generate")
         if audio_generate:
