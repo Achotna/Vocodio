@@ -4,6 +4,9 @@ const logoDark = "/static/images/logo_white.png";
 const iconDark = "/static/images/dark_mode_inv.png";
 const iconLight = "/static/images/light_mode.png";
 
+const downloadDark= "/static/images/download_white.png";
+const downloadLight = "/static/images/download_dark.png";
+
 
 function initTheme() {
     const storedTheme = localStorage.getItem("theme");
@@ -15,10 +18,12 @@ function initTheme() {
     const themeIcon = document.getElementById("theme-icon");
     const logo = document.getElementById("logo");
     const logoFooter = document.getElementById("logo-footer");
+    const downloadIcon = document.getElementById("download_icon");
 
     if (themeIcon) themeIcon.src = isDark ? iconLight : iconDark;
     if (logo) logo.src = isDark ? logoDark  : logoLight;
     if (logoFooter) logoFooter.src = isDark ? logoDark  : logoLight;
+    if (downloadIcon) downloadIcon.src = isDark ? downloadDark : downloadLight;
 }
 
 function setupToggle() {
@@ -34,10 +39,13 @@ function setupToggle() {
         const themeIcon = document.getElementById("theme-icon");
         const logo = document.getElementById("logo");
         const logoFooter = document.getElementById("logo-footer");
+        const downloadIcon = document.getElementById("download_icon");
+
 
         if (themeIcon) themeIcon.src = isDark ? iconLight : iconDark;
         if (logo) logo.src = isDark ? logoDark : logoLight;
         if (logoFooter)logoFooter.src = isDark ? logoDark : logoLight;
+        if (downloadIcon) downloadIcon.src = isDark ? downloadDark : downloadLight;
     });
 }
 

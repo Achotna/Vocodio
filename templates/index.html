@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard - Vocodio</title>
 
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.png') }}">
+
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -35,19 +37,6 @@
       <nav>
         <ul class="flex items-center space-x-4">
           <li>
-            <a href="{{ url_for('register') }}"
-               class="text-gray-600 hover:text-gray-800 border border-gray-300 px-4 py-2 rounded
-                      hover:bg-gray-100 transition dark:text-slate-300 dark:border-slate-600 dark:hover:bg-slate-700">
-              S'inscrire
-            </a>
-          </li>
-          <li>
-            <a href="{{ url_for('login') }}"
-               class="bg-purple-400 text-white px-4 py-2 rounded hover:bg-purple-500 transition">
-              Connexion
-            </a>
-          </li>
-          <li>
             <button id="darkmode-toggle" title="Changer de thème"
                     class="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-700 transition">
               <img id="theme-icon"
@@ -63,7 +52,7 @@
 
   <main class="flex-grow pt-28 pb-16 px-6">
     <div class="max-w-5xl mx-auto">
-
+  
       <h1 class="text-3xl font-bold text-gray-800 dark:text-white mb-8 leading-tight">
         Prêt(e) à apprendre,
         <span class="text-purple-500">{{ username }}</span>&nbsp;?
@@ -74,7 +63,7 @@
         <div class="bg-white bg-opacity-70 backdrop-filter backdrop-blur-md border border-gray-200 rounded-lg shadow-lg p-6
                     dark:bg-white dark:bg-opacity-10 dark:border-white">
           <h2 class="text-xl font-bold text-center text-gray-800 dark:text-white mb-7">Importez votre fichier excel</h2>
-          <p class="text-sm text-gray-400 dark:text-slate-200 mb-3">Glissez-déposez votre fichier Excel ci-dessous :</p>
+          <p class="text-sm text-gray-600 dark:text-slate-200 mb-3">Glissez-déposez votre fichier Excel ci-dessous :</p>
           <form action="/home" class="dropzone" id="my-dropzone" method="POST" enctype="multipart/form-data">
             {{ dropzone.create(action="/home") }}
             {{ dropzone.load_js() }}
@@ -85,7 +74,7 @@
         <div class="bg-white bg-opacity-70 backdrop-filter backdrop-blur-md border border-gray-200 rounded-lg shadow-lg p-6
                     dark:bg-white dark:bg-opacity-10 dark:border-white">
           <h2 class="text-xl font-bold text-center text-gray-800 dark:text-white mb-7">Ajouter un mot</h2>
-          <p class="text-sm text-gray-400 dark:text-slate-200 mb-3">
+          <p class="text-sm text-gray-600 dark:text-slate-200 mb-3">
             Remplissez manuellement les cases ci-dessous pour ajouter un mot dans votre liste de vocabulaire :
           </p>
           <form method="POST">
@@ -114,159 +103,189 @@
       </div>
 
       <form method="POST">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <div class="grid">
 
           <div class="bg-white bg-opacity-70 backdrop-filter backdrop-blur-md border border-gray-200 rounded-lg shadow-lg p-6
                       dark:bg-white dark:bg-opacity-10 dark:border-white">
-            <h2 class="text-xl font-bold text-center text-gray-800 dark:text-white mb-5">Paramètres</h2>
+            
+            <!--SECTION 1 ------------------------------------------------------> 
 
-            <div class="mb-3">
-              <label class="block text-sm font-medium text-gray-700 dark:text-white mb-2">Langue</label>
-              <select name="language1" class="border rounded px-3 py-2 w-full
-                                             dark:bg-slate-700 dark:border-slate-600 dark:text-white">
-                <option value="de-DE" {% if language1 == "de-DE" %}selected{% endif %}>Allemand</option>
-                <option value="en-GB" {% if language1 == "en-GB" %}selected{% endif %}>Anglais</option>
-                <option value="ar-XA" {% if language1 == "ar-XA" %}selected{% endif %}>Arabe</option>
-                <option value="cmn-CN" {% if language1 == "cmn-CN" %}selected{% endif %}>Chinois</option>
-                <option value="ko-KR" {% if language1 == "ko-KR" %}selected{% endif %}>Coréen</option>
-                <option value="es-ES" {% if language1 == "es-ES" %}selected{% endif %}>Espagnol</option>
-                <option value="fr-FR" {% if language1 == "fr-FR" %}selected{% endif %}>Français</option>
-                <option value="hi-IN" {% if language1 == "hi-IN" %}selected{% endif %}>Hindi</option>
-                <option value="it-IT" {% if language1 == "it-IT" %}selected{% endif %}>Italien</option>
-                <option value="ja-JP" {% if language1 == "ja-JP" %}selected{% endif %}>Japonais</option>
-                <option value="nl-NL" {% if language1 == "nl-NL" %}selected{% endif %}>Néerlandais</option>
-                <option value="pt-BR" {% if language1 == "pt-BR" %}selected{% endif %}>Portugais</option>
-                <option value="ru-RU" {% if language1 == "ru-RU" %}selected{% endif %}>Russe</option>
-              </select>
+            <div class="grid grid-cols-2 gap-6">
+
+              <div>
+                <h2 class="text-xl font-bold text-center text-gray-800 dark:text-white mb-5">Paramètres</h2>
+
+                <div class="mb-3">
+                  <label class="block text-sm font-medium text-gray-700 dark:text-white mb-2">Langue d'origine</label>
+                  <select name="language1" class="border rounded px-3 py-2 w-full
+                                                dark:bg-slate-700 dark:border-slate-600 dark:text-white">
+                    <option value="de-DE" {% if language1 == "de-DE" %}selected{% endif %}>Allemand</option>
+                    <option value="en-GB" {% if language1 == "en-GB" %}selected{% endif %}>Anglais</option>
+                    <option value="ar-XA" {% if language1 == "ar-XA" %}selected{% endif %}>Arabe</option>
+                    <option value="cmn-CN" {% if language1 == "cmn-CN" %}selected{% endif %}>Chinois</option>
+                    <option value="ko-KR" {% if language1 == "ko-KR" %}selected{% endif %}>Coréen</option>
+                    <option value="es-ES" {% if language1 == "es-ES" %}selected{% endif %}>Espagnol</option>
+                    <option value="fr-FR" {% if language1 == "fr-FR" %}selected{% endif %}>Français</option>
+                    <option value="hi-IN" {% if language1 == "hi-IN" %}selected{% endif %}>Hindi</option>
+                    <option value="it-IT" {% if language1 == "it-IT" %}selected{% endif %}>Italien</option>
+                    <option value="ja-JP" {% if language1 == "ja-JP" %}selected{% endif %}>Japonais</option>
+                    <option value="nl-NL" {% if language1 == "nl-NL" %}selected{% endif %}>Néerlandais</option>
+                    <option value="pt-BR" {% if language1 == "pt-BR" %}selected{% endif %}>Portugais</option>
+                    <option value="ru-RU" {% if language1 == "ru-RU" %}selected{% endif %}>Russe</option>
+                  </select>
+                </div>
+
+              <div class="mb-3">
+                <label class="block text-sm font-medium text-gray-700 dark:text-white mb-2">Langue d'arrivée</label>
+                <select name="language2" class="border rounded px-3 py-2 w-full
+                                              dark:bg-slate-700 dark:border-slate-600 dark:text-white">
+                  <option value="de-DE" {% if language2 == "de-DE" %}selected{% endif %}>Allemand</option>
+                  <option value="en-GB" {% if language2 == "en-GB" %}selected{% endif %}>Anglais</option>
+                  <option value="ar-XA" {% if language2 == "ar-XA" %}selected{% endif %}>Arabe</option>
+                  <option value="cmn-CN" {% if language2 == "cmn-CN" %}selected{% endif %}>Chinois</option>
+                  <option value="ko-KR" {% if language2 == "ko-KR" %}selected{% endif %}>Coréen</option>
+                  <option value="es-ES" {% if language2 == "es-ES" %}selected{% endif %}>Espagnol</option>
+                  <option value="fr-FR" {% if language2 == "fr-FR" %}selected{% endif %}>Français</option>
+                  <option value="hi-IN" {% if language2 == "hi-IN" %}selected{% endif %}>Hindi</option>
+                  <option value="it-IT" {% if language2 == "it-IT" %}selected{% endif %}>Italien</option>
+                  <option value="ja-JP" {% if language2 == "ja-JP" %}selected{% endif %}>Japonais</option>
+                  <option value="nl-NL" {% if language2 == "nl-NL" %}selected{% endif %}>Néerlandais</option>
+                  <option value="pt-BR" {% if language2 == "pt-BR" %}selected{% endif %}>Portugais</option>
+                  <option value="ru-RU" {% if language2 == "ru-RU" %}selected{% endif %}>Russe</option>
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label class="block text-sm font-medium text-gray-700 dark:text-white mb-2">Durée des pauses (en secondes)</label>
+                <input type="number" name="pause_duration"
+                      class="w-full border border-gray-300 rounded-lg px-3 py-2
+                              dark:bg-slate-700 dark:border-slate-600 dark:text-white"
+                      value="{{ pause_duration }}" min="0.5" step="0.5">
+              </div>
+
+              <div class="mb-3">
+                <label class="block text-sm font-medium text-gray-700 dark:text-white mb-2">Genre de la voix</label>
+                <select name="gender_voice" class="w-full border border-gray-300 rounded-lg px-3 py-2
+                                                  dark:bg-slate-700 dark:border-slate-600 dark:text-white">
+                  <option value="female" {% if gender_voice == "female" %}selected{% endif %}>Féminin</option>
+                  <option value="male"   {% if gender_voice == "male"   %}selected{% endif %}>Masculin</option>
+                </select>
+              </div>
+
+              <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 dark:text-white mb-2">Nombre de répétitions</label>
+                <input type="number" name="num_loops"
+                      class="w-full border border-gray-300 rounded-lg px-3 py-2
+                              dark:bg-slate-700 dark:border-slate-600 dark:text-white"
+                      value="{{ num_loops }}" min="1" max="20">
+              </div>
+
+              <div class="grid justify-items-center">
+                <button type="submit" name="update_settings" value="true"
+                        class="relative px-2 py-2 border-2 border-purple-400 overflow-hidden rounded-full group cursor-pointer font-medium
+                        dark:text-slate-200">
+                  <span class="absolute inset-0 bg-purple-300/75 translate-x-[-100%] group-hover:translate-x-0 rounded-full transition-transform duration-400
+                  dark:bg-purple-300/75"></span>
+                  <span class="relative z-10 text-slate-500 group-hover:text-white transition-colors duration-400
+                  dark:text-slate-200 dark:group-hover:text-white"">
+                    Mettre à jour les paramètres
+                  </span>
+                </button>
             </div>
 
-            <div class="mb-3">
-              <label class="block text-sm font-medium text-gray-700 dark:text-white mb-2">Language</label>
-              <select name="language2" class="border rounded px-3 py-2 w-full
-                                             dark:bg-slate-700 dark:border-slate-600 dark:text-white">
-                <option value="de-DE" {% if language2 == "de-DE" %}selected{% endif %}>Allemand</option>
-                <option value="en-GB" {% if language2 == "en-GB" %}selected{% endif %}>Anglais</option>
-                <option value="ar-XA" {% if language2 == "ar-XA" %}selected{% endif %}>Arabe</option>
-                <option value="cmn-CN" {% if language2 == "cmn-CN" %}selected{% endif %}>Chinois</option>
-                <option value="ko-KR" {% if language2 == "ko-KR" %}selected{% endif %}>Coréen</option>
-                <option value="es-ES" {% if language2 == "es-ES" %}selected{% endif %}>Espagnol</option>
-                <option value="fr-FR" {% if language2 == "fr-FR" %}selected{% endif %}>Français</option>
-                <option value="hi-IN" {% if language2 == "hi-IN" %}selected{% endif %}>Hindi</option>
-                <option value="it-IT" {% if language2 == "it-IT" %}selected{% endif %}>Italien</option>
-                <option value="ja-JP" {% if language2 == "ja-JP" %}selected{% endif %}>Japonais</option>
-                <option value="nl-NL" {% if language2 == "nl-NL" %}selected{% endif %}>Néerlandais</option>
-                <option value="pt-BR" {% if language2 == "pt-BR" %}selected{% endif %}>Portugais</option>
-                <option value="ru-RU" {% if language2 == "ru-RU" %}selected{% endif %}>Russe</option>
-              </select>
-            </div>
+            </div> 
 
-            <div class="mb-3">
-              <label class="block text-sm font-medium text-gray-700 dark:text-white mb-2">Durée des pauses (en secondes)</label>
-              <input type="number" name="pause_duration"
-                     class="w-full border border-gray-300 rounded-lg px-3 py-2
-                            dark:bg-slate-700 dark:border-slate-600 dark:text-white"
-                     value="{{ pause_duration }}" min="0.5" step="0.5">
-            </div>
+            <!--SECTION 2 ------------------------------------------------------>
 
-            <div class="mb-3">
-              <label class="block text-sm font-medium text-gray-700 dark:text-white mb-2">Genre de la voix</label>
-              <select name="gender_voice" class="w-full border border-gray-300 rounded-lg px-3 py-2
-                                                 dark:bg-slate-700 dark:border-slate-600 dark:text-white">
-                <option value="female" {% if gender_voice == "female" %}selected{% endif %}>Féminin</option>
-                <option value="male"   {% if gender_voice == "male"   %}selected{% endif %}>Masculin</option>
-              </select>
-            </div>
+            <div>
 
-            <div class="mb-6">
-              <label class="block text-sm font-medium text-gray-700 dark:text-white mb-2">Nombre de répétitions</label>
-              <input type="number" name="num_loops"
-                     class="w-full border border-gray-300 rounded-lg px-3 py-2
-                            dark:bg-slate-700 dark:border-slate-600 dark:text-white"
-                     value="{{ num_loops }}" min="1" max="20">
-            </div>
+              <h2 class="text-xl font-bold text-center text-gray-800 dark:text-white mb-5">Vocabulaire automatique</h2>
 
-            <div class="grid grid-cols-2 gap-2">
-              <button type="submit" name="update_settings" value="true"
-                      class="relative px-2 py-2 border-2 border-purple-400 overflow-hidden rounded-full group cursor-pointer font-medium
-                      dark: text-slate-200">
-                <span class="absolute inset-0 bg-purple-200/75 translate-x-[-100%] group-hover:translate-x-0 rounded-full transition-transform duration-400
-                dark: bg-purple-300/75"></span>
-                <span class="relative z-10 text-slate-500 dark:text-slate-300 group-hover:text-slate-600 transition-colors duration-400
-                dark:text-slate-200 dark: group-hover:text-white">
-                  Mettre à jour les paramètres
-                </span>
-              </button>
+              <label class="block text-left text-sm font-medium text-gray-700 dark:text-white mt-3 mb-2">Thème de la liste de vocabulaire</label>
 
-              <button type="submit" name="clear" value="true"
-                      class="relative px-2 py-2 border-2 border-purple-400 overflow-hidden rounded-full group cursor-pointer font-medium
-                      dark: text-slate-200">
-                <span class="absolute inset-0 bg-purple-200/75 translate-x-[-100%] group-hover:translate-x-0 rounded-full transition-transform duration-400
-                dark: bg-purple-300/75"></span>
-                <span class="relative z-10 text-slate-500 group-hover:text-slate-600 transition-colors duration-400
-                dark:text-slate-200 dark: group-hover:text-white">
-                  Réinitialiser la base de données
-                </span>
-              </button>
-            </div>
+              <input type="text" name="theme" placeholder="Votre thème"
+                        class="border rounded px-3 py-2 w-full
+                                dark:bg-slate-700 dark:border-slate-600 dark:text-white dark:placeholder-slate-400">
+
+              <label class="block text-left text-sm font-medium text-gray-700 dark:text-white mt-3 mb-2">Nombre de mots à générer</label>
+
+              <input type="number" name="nb_words" placeholder="Nombre de mots"
+                        class="border rounded px-3 py-2 w-full
+                                dark:bg-slate-700 dark:border-slate-600 dark:text-white dark:placeholder-slate-400">
+
+              <div class="flex items-center gap-3 mb-5 mt-5 justify-center">
+
+                <button type="submit" name="vocab_auto" value="true"
+                        class="relative px-2 py-2 border-2 border-purple-400 overflow-hidden group text-center rounded-full cursor-pointer font-medium
+                        dark:text-slate-200">
+                  <span class="absolute inset-0 bg-purple-300/75 translate-x-[-100%] group-hover:translate-x-0 rounded-full transition-transform duration-400
+                  dark:bg-purple-300/75"></span>
+                  <span class="relative z-10 text-slate-500 group-hover:text-white transition-colors duration-400
+                  dark:text-slate-200 dark:group-hover:text-white">
+                    Générer (vocabulaire)
+                  </span>
+                </button>
+
+                <button type="submit" name="audio_generate" value="true"
+                        class="relative px-2 py-2 border-2 border-purple-400 overflow-hidden group text-center rounded-full cursor-pointer font-medium
+                        dark:text-slate-200">
+                  <span class="absolute inset-0 bg-purple-300/75 translate-x-[-100%] group-hover:translate-x-0 rounded-full transition-transform duration-400
+                  dark:bg-purple-300/75"></span>
+                  <span class="relative z-10 text-slate-500 group-hover:text-white transition-colors duration-400
+                  dark:text-slate-200 dark:group-hover:text-white">
+                    Générer (audio)
+                  </span>
+                </button>
+                
+                <a href="/download_audio"
+                  title="Télécharger l'audio"
+                  class="relative w-10 h-10 flex items-center justify-center border-slate-500 border-2 rounded-full transition-transform duration-300 hover:scale-110
+                  dark:border-white">
+                  <img src="{{url_for('static', filename='images/download_dark.png') }}" 
+                       id="download_icon" alt="Télécharger l'audio" 
+                       class="w-5 h-5 relative z-10">
+                </a>
+              </div> <!-- Fin div section boutons-->
           
-            <h2 class="text-xl font-bold text-center text-gray-800 dark:text-white mb-4">Votre liste de mots</h2>
+              <h2 class="text-xl font-bold text-center text-gray-800 dark:text-white mb-4">Votre liste de mots</h2>
 
-            <div class="flex-grow max-h-64 overflow-y-auto bg-gray-50 dark:bg-slate-700 rounded p-3 mb-5">
-              {% if rows %}
-                {% for row in rows %}
-                  <input type="hidden" name="word_id_{{ loop.index }}" value="{{ row[0] }}">
-                  <div class="flex items-center gap-3 mb-2">
-                    <input type="checkbox" name="check_{{ loop.index }}" value="1"
-                           {% if row[3] == 1 %}checked{% endif %}>
-                    <span class="text-sm text-gray-700 dark:text-slate-300">{{ row[1] }} → {{ row[2] }}</span>
-                  </div>
-                {% endfor %}
-              {% else %}
-                <p class="text-gray-400 dark:text-slate-500 text-sm text-center py-4">Aucun mot</p>
-              {% endif %}
-            </div>
+              <div class="flex-grow max-h-64 overflow-y-auto bg-gray-50 dark:bg-slate-700 rounded p-3 mb-5">
+                {% if rows %}
+                  {% for row in rows %}
+                    <input type="hidden" name="word_id_{{ loop.index }}" value="{{ row[0] }}">
+                    <div class="flex items-center gap-3 mb-2">
+                      <input type="checkbox" name="check_{{ loop.index }}" value="1"
+                            {% if row[3] == 1 %}checked{% endif %}>
+                      <span class="text-sm text-gray-700 dark:text-slate-300">{{ row[1] }} → {{ row[2] }}</span>
+                    </div>
+                  {% endfor %}
+                {% else %}
+                  <p class="text-gray-400 dark:text-slate-500 text-sm text-center py-4">Aucun mot</p>
+                {% endif %}
+              </div>
 
+            </div> <!-- Fin div section 2 card 2-->
+          </div> <!-- Fin division card 2-->
 
-          <input type="text" name="theme" placeholder="votre thème">
-          <input type="number" name="nb_words" placeholder="nombre de mots">
-              <button type="submit" name="vocab_auto" value="true"
-                      class="relative px-2 py-2 border-2 border-purple-400 overflow-hidden group text-center rounded-full cursor-pointer font-medium
-                      dark: text-slate-200">
-                <span class="absolute inset-0 bg-purple-200/75 translate-x-[-100%] group-hover:translate-x-0 rounded-full transition-transform duration-400
-                dark: bg-purple-300/75"></span>
-                <span class="relative z-10 text-slate-500 dark:text-slate-300 group-hover:text-slate-600 transition-colors duration-400
-                dark:text-slate-200 dark: group-hover:text-white">
-                  Vocabulaire automatique
-                </span>
-              </button>
+        </div> <!-- Fin card 2-->
 
-              <button type="submit" name="audio_generate" value="true"
-                      class="relative px-2 py-2 border-2 border-purple-400 overflow-hidden group text-center rounded-full cursor-pointer font-medium
-                      dark: text-slate-200">
-                <span class="absolute inset-0 bg-purple-200/75 translate-x-[-100%] group-hover:translate-x-0 rounded-full transition-transform duration-400
-                dark: bg-purple-300/75"></span>
-                <span class="relative z-10 text-slate-500 dark:text-slate-300 group-hover:text-slate-600 transition-colors duration-400
-                dark:text-slate-200 dark: group-hover:text-white">
-                  Générer l'audio
-                </span>
-              </button>
-              
-              <a href="/download_audio"
-                 class="relative px-2 py-2 border-2 border-purple-400 overflow-hidden group text-center rounded-full cursor-pointer font-medium
-                 dark: text-slate-200">
-                <span class="absolute inset-0 bg-purple-200/75 translate-x-[-100%] group-hover:translate-x-0 rounded-full transition-transform duration-400
-                dark: bg-purple-300/75"></span>
-                <span class="relative z-10 text-slate-500 dark:text-slate-300 group-hover:text-slate-600 transition-colors duration-400
-                dark:text-slate-200 dark: group-hover:text-white">
-                  Télécharger l'audio
-                </span>
-              </a>
-          </div>
-
-        </div>
       </form>
 
-    </div>
+    </div> <!-- Fin card 1 et 2-->
+
+    <button type="submit" name="clear" value="true"
+    class="relative px-2 py-2 border-2 border-purple-400 overflow-hidden rounded-full group cursor-pointer font-medium mt-6
+    dark:text-slate-200">
+      <span class="absolute inset-0 bg-purple-200/75 translate-x-[-100%] group-hover:translate-x-0 rounded-full transition-transform duration-400
+      dark: bg-purple-300/75">
+      </span>
+      <span class="relative z-10 text-slate-500 group-hover:text-slate-600 transition-colors duration-400
+      dark:text-slate-200 dark: group-hover:text-white">
+      Réinitialiser la base de données
+      </span>
+    </button>
+
   </main>
 
     <footer class="bg-white bg-opacity-70 backdrop-filter backdrop-blur-md
@@ -281,12 +300,12 @@
 
 
     <div class="border-lg border-gray-300 dark:border-slate-600 pl-4">
-      <p class="text-md text-gray-400 dark:text-slate-500 mb-1">
-        &copy; 2025 Vocodio. Tous droits réservés.
+      <p class="text-md text-gray-700 dark:text-slate-500 mb-1">
+        &copy; 2026 Vocodio. Tous droits réservés.
       </p>
       <span class="inline-block text-md font-medium text-gray-600 dark:text-slate-400
                    border border-gray-300 dark:border-slate-600 rounded px-2 py-0.5">
-        Made with ♥ at our places + canva :> MERCI MONSIEUR ELOPHE POUR VOTRE CONTRIBUTION CONTRIBUTIONNELLE DU BON FONCTIONNEMENT, DISTRIBUTION ET ENTRETIEN DE LA CLE API, NOTRE COEUR PALPITE EN Y PENSANT YOUHOU!!!!!
+        Vocodio est un projet de trois élèves en classe de terminale, développé pour aider à réviser du vocabulaire de manière innovante et efficace. Notre mission est de rendre l'apprentissage du vocabulaire accessible, personnalisé et efficace pour tou.tes les apprenant.es, où qu'ils soient.
       </span>
     </div>
 
