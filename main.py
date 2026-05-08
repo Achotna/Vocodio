@@ -184,7 +184,7 @@ def clear_audio_cache():
 
 
 #Google Text to Speech clé API
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "tts_service_account.json"
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "C:\\Users\\Eleve\\Desktop\\Vocodio\\tts_service_account.json"
 client = texttospeech.TextToSpeechClient()
 
 # Dossiers pour stockage audio

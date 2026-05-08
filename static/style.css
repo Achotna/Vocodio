@@ -49,8 +49,6 @@ to { opacity: 1; transform: translateY(0) scale(1); }
 background-color: rgba(30, 27, 75, 0.6);
 border-color: rgba(139, 92, 246, 0.2);
 }
-.dark .card h3 { color: #e2e8f0; }
-.dark .card p  { color: #94a3b8; }
 
 #darkmode-toggle { transition: transform 0.3s ease; }
 #darkmode-toggle:hover { transform: rotate(20deg); }
