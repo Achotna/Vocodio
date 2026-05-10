@@ -646,10 +646,10 @@ def index():
 #télécharger audio
 @app.route('/download_audio')
 def download_audio():
-    if not os.path.exists("audio/final/final_output.mp3"):
+    if not os.path.exists("static/audio/final/final_output.mp3"):
         return "File not found. Generate audio first."
     else:
-        return send_file("audio/final/final_output.mp3", as_attachment=True)
+        return send_file("static/audio/final/final_output.mp3", as_attachment=True)
 
 
 #run flask
