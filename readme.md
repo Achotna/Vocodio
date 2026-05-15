@@ -240,7 +240,7 @@ Your Excel file must contain exactly 2 columns:
 
 ---
 
-## Author 👨‍💻
+## Authors 👨‍💻
 
 Created by Antonina Savchenko, Elisa Salignon and Zoé Schmalz
 
