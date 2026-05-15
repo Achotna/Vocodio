@@ -542,12 +542,12 @@ def index():
             conn_users.close()
 
             # audios
-            conn_audios = sqlite3.connect("audios.db")
-            cursor_audios = conn_audios.cursor()
-            cursor_audios.execute("DELETE FROM audios")
-            cursor_audios.execute("DELETE FROM sqlite_sequence WHERE name='audios'")
-            conn_audios.commit()
-            conn_audios.close()
+            #conn_audios = sqlite3.connect("audios.db")
+            #cursor_audios = conn_audios.cursor()
+            #cursor_audios.execute("DELETE FROM audios")
+            #cursor_audios.execute("DELETE FROM sqlite_sequence WHERE name='audios'")
+            #conn_audios.commit()
+            #conn_audios.close()
 
             print("Databases cleared")
 
@@ -646,10 +646,10 @@ def index():
 #télécharger audio
 @app.route('/download_audio')
 def download_audio():
-    if not os.path.exists("static/audio/final/final_output.mp3"):
+    if not os.path.exists("static\\audio\\final\\final_output.mp3"):
         return "File not found. Generate audio first."
     else:
-        return send_file("static/audio/final/final_output.mp3", as_attachment=True)
+        return send_file("static\\audio\\final\\final_output.mp3", as_attachment=True)
 
 
 #run flask
