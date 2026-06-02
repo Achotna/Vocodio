@@ -54,10 +54,3 @@ document.addEventListener("DOMContentLoaded", () => {
     setupToggle();
 });
 
-window.addEventListener("load", () => {
-  document.querySelectorAll(".reveal").forEach((el, i) => {
-    setTimeout(() => {
-      el.classList.remove("opacity-0", "translate-y-6");
-    }, i * 150);
-  });
-});
