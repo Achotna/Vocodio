@@ -26,3 +26,4 @@ uploads/
 # Generated audio
 audio/
 static/audio/final/
+piper_voices/
