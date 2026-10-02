@@ -1,0 +1,28 @@
+et --soft HEAD~1
+test_code/
+
+# Virtual environment
+.venv/
+
+# Python cache
+__pycache__/
+
+
+# Environment variables / secrets
+.env
+
+# API/service credentials
+tts_service_account.json
+*.json.key
+
+# Databases
+*.db
+*.sqlite
+*.sqlite3
+
+# Uploaded files
+uploads/
+
+# Generated audio
+audio/
+static/audio/final/
