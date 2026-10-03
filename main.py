@@ -33,7 +33,8 @@ from pydub import AudioSegment
 # ============================#
 #Chargement API
 load_dotenv()
-OLLAMA_URL = os.getenv("OLLAMA_URL", "http://localhost:11434/api/chat")
+OLLAMA_URL = "http://127.0.0.1:11434/api/chat"
+OLLAMA_MODEL = "qwen3:4b-instruct"
 
 #Fonction génération automatique
 def chat_with_gpt(theme, nb_words, lang1, lang2):
@@ -41,7 +42,7 @@ def chat_with_gpt(theme, nb_words, lang1, lang2):
         response = requests.post(
             OLLAMA_URL,
             json={
-                "model": "qwen3:4b-instruct",
+                "model": OLLAMA_MODEL,
                 "messages": [{
                     "role": "user",
                     "content": f"Generate EXACTLY {nb_words} vocabulary pairs about the theme '{theme}'. The source language is {lang1} and the translation language is {lang2}. Each dictionary must contain exactly two keys: 'lang1' and 'lang2'. The value of 'lang1' must be an actual vocabulary word in the source language. The value of 'lang2' must be the translation of that word in the translation language. Do NOT use language codes like '{lang1}' or '{lang2}' as vocabulary values. All source words must be different, simple, common and relevant to the theme. Example for English to French about animals: [{{'lang1': 'cat', 'lang2': 'chat'}}, {{'lang1': 'dog', 'lang2': 'chien'}}]. Return ONLY a valid Python list of dictionaries. No explanations, no markdown, no comments."
@@ -52,6 +53,9 @@ def chat_with_gpt(theme, nb_words, lang1, lang2):
         )
         response.raise_for_status()
         chat_response = response.json()["message"]["content"]
+
+        print("Ollama status:", response.status_code)
+        print("Ollama response:", response.text)
 
         return chat_response
 
